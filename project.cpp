@@ -211,6 +211,8 @@ string nextToken(ifstream &myfile)
             }
             else if (c == '_')
                 return "_";
+            else if (c == '~')
+                return "~";
             else if (comma(c))
                 return ",";
             else if (c == '~')
@@ -347,12 +349,7 @@ int main()
     output.open("out.txt", ios::out);
 
     string token = nextToken(latexf);
-    cout << token << endl;
-    token = nextToken(latexf);
-    cout << token << endl;
-    token = nextToken(latexf);
-    cout << token << endl;
-    // expr(latexf, output, token);
+    expr(latexf, output, token);
     latexf.close();
     output.close();
 
