@@ -1,0 +1,54 @@
+start -> .BL expr .EL
+
+        
+expr -> expr symbols expr
+        expr symbols2 expr
+        expr \symbols2 expr
+        expr [ expr ]
+        expr ( expr )
+        expr { expr }
+        expr | expr |
+        \{ expr \}
+        { expr }
+        | expr |
+        ( expr )
+        ~ expr
+        expr ~
+        symbols expr
+        expr symbols
+        \symbols2 expr
+        expr \symbols2
+        \expr s
+        expr prime
+        symbols2
+        iden
+        num
+
+s ->    \expr s
+        LAMBDA
+
+symbols ->      +
+                -
+                *
+                /
+                ^
+                =
+                <
+                >
+                <=
+                >=
+                _
+
+symbols2 ->     ,
+                .
+                >
+                <
+                ;
+                !
+                |
+                {
+                }
+                (
+                )
+
+prime -> '
