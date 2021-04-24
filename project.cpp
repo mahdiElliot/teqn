@@ -31,6 +31,12 @@ bool comma(char c)
 {
     return c == ',';
 }
+
+bool dot(char c)
+{
+    return c == '.';
+}
+
 bool colon(char d)
 {
     return d == ':';
@@ -109,6 +115,21 @@ bool doubleQ(char dq)
 bool singleQ(char sq)
 {
     return sq == '\'';
+}
+
+bool underline(char c)
+{
+    return c == '_';
+}
+
+bool spaceHat(char c)
+{
+    return c == '~';
+}
+
+bool powerSign(char c)
+{
+    return c == '^';
 }
 
 bool And(char a)
@@ -197,7 +218,7 @@ string nextToken(ifstream &myfile)
                 token = "";
 
                 while (((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                        isDigit(c) || c == '.') &&
+                        isDigit(c) || dot(c)) &&
                        !myfile.eof())
                 {
                     token = token + c;
@@ -209,9 +230,9 @@ string nextToken(ifstream &myfile)
                     myfile.unget();
                 }
             }
-            else if (c == '_')
+            else if (underline(c))
                 return "_";
-            else if (c == '~')
+            else if (spaceHat(c))
                 return "~";
             else if (comma(c))
                 return ",";
@@ -239,7 +260,7 @@ string nextToken(ifstream &myfile)
                 return "*";
             else if (slash(c))
                 return "/";
-            else if (c == '^')
+            else if (powerSign(c))
                 return "^";
             else if (backSlash(c))
             {
@@ -302,7 +323,7 @@ string nextToken(ifstream &myfile)
                     return "=";
                 }
             }
-            else if (c == '>')
+            else if (greaterThan(c))
             {
                 if (!myfile.eof())
                 {
@@ -315,7 +336,7 @@ string nextToken(ifstream &myfile)
                     return ">";
                 }
             }
-            else if (c == '<')
+            else if (c == lessThan(c))
             {
                 if (!myfile.eof())
                 {
@@ -336,10 +357,6 @@ string nextToken(ifstream &myfile)
 void expr(ifstream &inp, ofstream &outp, string &token);
 void expr1(ifstream &inp, ofstream &outp, string &token);
 void expr2(ifstream &inp, ofstream &outp, string &token);
-void expr3(ifstream &inp, ofstream &outp, string &token);
-void symbols(ifstream &inp, ofstream &outp, string &token);
-void clist(ifstream &inp, ofstream &outp, string &token);
-void curlyBr(ifstream &inp, ofstream &outp, string &token);
 
 int main()
 {
@@ -396,162 +413,89 @@ void expr1(ifstream &inp, ofstream &outp, string &token)
 
 void expr2(ifstream &inp, ofstream &outp, string &token)
 {
-    expr3(inp, outp, token);
-    while (token == "(")
-    {
-        token = nextToken(inp);
-        expr2(inp, outp, token);
-        if (token == ")")
-            token = nextToken(inp);
-        else
-            cout << line << ": syntax error in )\n";
-    }
 }
 
-void expr3(ifstream &inp, ofstream &outp, string &token)
-{
-    if (token == "+" || token == "-")
-    {
-        token = nextToken(inp);
-        expr(inp, outp, token);
-    }
-    else if (token == "|")
-    {
-        token = nextToken(inp);
-        expr(inp, outp, token);
-        if (token == "|")
-        {
-            /* code */
-        }
-        else
-            cout << line << ": syntax error in |\n";
-    }
-    else if (token == "[")
-    {
-        token = nextToken(inp);
-        expr(inp, outp, token);
-        if (token == "]")
-        {
-            /* code */
-        }
-        else
-            cout << line << ": syntax error in ]\n";
-    }
-    else if (token == "(")
-    {
-        token = nextToken(inp);
-        expr(inp, outp, token);
-        if (token == ")")
-        {
-            /* code */
-        }
-        else
-            cout << line << ": syntax error )\n";
-    }
-    else if (token == "\\")
-    {
-        token = nextToken(inp);
-        if (token == "{")
-        {
-            token = nextToken(inp);
-            expr(inp, outp, token);
-            if (token == "\\")
-            {
-                token = nextToken(inp);
-                if (token == "}")
-                {
-                    /* code */
-                }
-                else
-                    cout << line << ": syntax error in\\}\n";
-            }
-            else
-                cout << line << ": syntax error in \\\n";
-        }
-        else
-        {
-            symbols(inp, outp, token);
-            expr(inp, outp, token);
-        }
-    }
-    else if (isWord(token))
-    {
-        token = nextToken(inp);
-        if (token == "(")
-        {
-            token = nextToken(inp);
-            clist(inp, outp, token);
-            if (token == ")")
-            {
-            }
-            else
-                cout << line << ": syntax error in )\n";
-        }
-    }
-    else if (isNumber(token))
-    {
-    }
-}
-
-void symbols(ifstream &inp, ofstream &outp, string &token)
-{
-    if (token == ",")
-    {
-        /* code */
-    }
-    else if (token == "|")
-    {
-        /* code */
-    }
-    else
-    {
-        expr(inp, outp, token);
-        if (token == "^")
-        {
-            token = nextToken(inp);
-            curlyBr(inp, outp, token);
-            token = nextToken(inp);
-            curlyBr(inp, outp, token);
-        }
-        else if (token == "{")
-        {
-            curlyBr(inp, outp, token);
-            token = nextToken(inp);
-            curlyBr(inp, outp, token);
-        }
-        else if (token == "[")
-        {
-            token = nextToken(inp);
-            expr(inp, outp, token);
-            if (token == "]")
-            {
-                token = nextToken(inp);
-                curlyBr(inp, outp, token);
-            }
-            else
-                cout << line << ": syntax error in ]\n";
-        }
-    }
-}
-
-void curlyBr(ifstream &inp, ofstream &outp, string &token)
-{
-    if (token == "{")
-    {
-        token = nextToken(inp);
-        expr(inp, outp, token);
-        if (token == "}")
-        {
-            /* code */
-        }
-    }
-}
-
-void clist(ifstream &inp, ofstream &outp, string &token)
-{
-    expr(inp, outp, token);
-    if (token == "," || token == "|")
-    {
-        clist(inp, outp, token);
-    }
-}
+// // void expr3(ifstream &inp, ofstream &outp, string &token)
+// {
+//     if (token == "+" || token == "-")
+//     {
+//         token = nextToken(inp);
+//         expr(inp, outp, token);
+//     }
+//     else if (token == "|")
+//     {
+//         token = nextToken(inp);
+//         expr(inp, outp, token);
+//         if (token == "|")
+//         {
+//             /* code */
+//         }
+//         else
+//             cout << line << ": syntax error in |\n";
+//     }
+//     else if (token == "[")
+//     {
+//         token = nextToken(inp);
+//         expr(inp, outp, token);
+//         if (token == "]")
+//         {
+//             /* code */
+//         }
+//         else
+//             cout << line << ": syntax error in ]\n";
+//     }
+//     else if (token == "(")
+//     {
+//         token = nextToken(inp);
+//         expr(inp, outp, token);
+//         if (token == ")")
+//         {
+//             /* code */
+//         }
+//         else
+//             cout << line << ": syntax error )\n";
+//     }
+//     else if (token == "\\")
+//     {
+//         token = nextToken(inp);
+//         if (token == "{")
+//         {
+//             token = nextToken(inp);
+//             expr(inp, outp, token);
+//             if (token == "\\")
+//             {
+//                 token = nextToken(inp);
+//                 if (token == "}")
+//                 {
+//                     /* code */
+//                 }
+//                 else
+//                     cout << line << ": syntax error in\\}\n";
+//             }
+//             else
+//                 cout << line << ": syntax error in \\\n";
+//         }
+//         else
+//         {
+//             symbols(inp, outp, token);
+//             expr(inp, outp, token);
+//         }
+//     }
+//     else if (isWord(token))
+//     {
+//         token = nextToken(inp);
+//         if (token == "(")
+//         {
+//             token = nextToken(inp);
+//             clist(inp, outp, token);
+//             if (token == ")")
+//             {
+//             }
+//             else
+//                 cout << line << ": syntax error in )\n";
+//         }
+//     }
+//     else if (isNumber(token))
+//     {
+//     }
+// }
