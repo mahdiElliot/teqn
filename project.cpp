@@ -112,6 +112,11 @@ bool doubleQ(char dq)
     return dq == '\"';
 }
 
+bool backQ(char c)
+{
+    return c == '`';
+}
+
 bool singleQ(char sq)
 {
     return sq == '\'';
@@ -146,18 +151,6 @@ bool Not(char n)
 {
     return n == '!';
 }
-
-// bool isSign(char c)
-// {
-//     return greaterThan(c) || lessThan(c) || equal(c) ||
-//      comma(c) || colon(c) || semiColon(c) || openBrace(c) ||
-//      closeBrace(c) || openParenthesis(c) ||
-//      closeParenthesis(c) || openBracket(c) ||
-//      closeBracket(c) || add(c) || sub(c) || Or(c) ||
-//      mul(c) || slash(c) || backSlash(c) || doubleQ(c) ||
-//      singleQ(c) || And(c) || Not(c) || c == '.' || c == '^';
-
-// }
 
 bool isWord(string letter)
 {
@@ -202,7 +195,7 @@ string nextToken(ifstream &myfile)
             if (c == '%')
             {
                 myfile.get(c);
-                while ((c != '\r' || c!= '%') && !myfile.eof())
+                while ((c != '\r' || c != '%') && !myfile.eof())
                     myfile.get(c);
             }
             if (c == '\n')
@@ -212,11 +205,10 @@ string nextToken(ifstream &myfile)
 
         if (!myfile.eof())
         {
-            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                isDigit(c))
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || isDigit(c))
             {
-                token = "";
-
+                token = c;
+                myfile.get(c);
                 while (((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                         isDigit(c) || dot(c)) &&
                        !myfile.eof())
@@ -230,6 +222,27 @@ string nextToken(ifstream &myfile)
                     myfile.unget();
                 }
             }
+            else if (backSlash(c))
+            {
+                token = c;
+                myfile.get(c);
+                if (!myfile.eof() && backSlash(c))
+                    return "\\\\";
+
+                while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') &&
+                                                     !myfile.eof())
+                {
+                    token = token + c;
+                    myfile.get(c);
+                }
+
+                if (!myfile.eof())
+                {
+                    myfile.unget();
+                }
+            }
+            else if (dot(c))
+                return ".";
             else if (underline(c))
                 return "_";
             else if (spaceHat(c))
@@ -262,240 +275,64 @@ string nextToken(ifstream &myfile)
                 return "/";
             else if (powerSign(c))
                 return "^";
-            else if (backSlash(c))
+            else if(singleQ(c))
             {
-                char c1;
-                myfile.get(c1);
-                if (backSlash(c1))
-                    return "\\\\";
-
-                myfile.unget();
-                return "\\";
+                return "'";
+            }
+            else if(backQ(c))
+            {
+                return "`";
             }
             else if (colon(c))
             {
-                char c1;
-                myfile.get(c1);
-                if (equal(c1))
-                    return ":=";
-
-                myfile.unget();
                 return ":";
             }
             else if (And(c))
             {
-                if (!myfile.eof())
-                {
-                    char c1;
-                    myfile.get(c1);
-                    if (And(c1))
-                        return "&&";
-
-                    myfile.unget();
-                    return "&";
-                }
+               return "&";
             }
             else if (Or(c))
             {
-                if (!myfile.eof())
-                {
-                    char c1;
-                    myfile.get(c1);
-                    if (Or(c1))
-                        return "||";
-
-                    myfile.unget();
-                    return "|";
-                }
+                return "|";
             }
             else if (Not(c))
                 return "!";
             else if (equal(c))
             {
-                if (!myfile.eof())
-                {
-                    char c1;
-                    myfile.get(c1);
-                    if (equal(c1))
-                        return "==";
-
-                    myfile.unget();
-                    return "=";
-                }
+                return "=";
             }
             else if (greaterThan(c))
             {
-                if (!myfile.eof())
-                {
-                    char c1;
-                    myfile.get(c1);
-                    if (equal(c1))
-                        return ">=";
-
-                    myfile.unget();
-                    return ">";
-                }
+                return ">";
             }
-            else if (c == lessThan(c))
+            else if (lessThan(c))
             {
-                if (!myfile.eof())
-                {
-                    char c1;
-                    myfile.get(c1);
-                    if (c1 == '=')
-                        return "<=";
-
-                    myfile.unget();
-                    return "<";
-                }
+                return "<";
             }
         }
     }
     return token;
 }
 
-void expr(ifstream &inp, ofstream &outp, string &token);
-void expr1(ifstream &inp, ofstream &outp, string &token);
-void expr2(ifstream &inp, ofstream &outp, string &token);
+void run();
+
 
 int main()
+{
+    run();
+
+    return 0;
+}
+
+void run()
 {
     ifstream latexf;
     latexf.open(latexEq, ios::in);
     ofstream output;
     output.open("out.txt", ios::out);
-
     string token = nextToken(latexf);
-    expr(latexf, output, token);
     latexf.close();
     output.close();
-
-    return 0;
 }
 
-void expr(ifstream &inp, ofstream &outp, string &token)
-{
-    expr1(inp, outp, token);
-    while (token == "=" || token == "+" || token == "*" || token == "^" || token == "-" ||
-           token == "\\")
-    {
-        if (token == "\\")
-        {
-            token = nextToken(inp);
-            if (token == ",")
-            {
-                /* code */
-            }
-            else if (token == "|")
-            {
-                /* code */
-            }
-        }
 
-        token = nextToken(inp);
-        expr(inp, outp, token);
-    }
-}
-
-void expr1(ifstream &inp, ofstream &outp, string &token)
-{
-    expr2(inp, outp, token);
-    while (token == "[")
-    {
-        token = nextToken(inp);
-        expr1(inp, outp, token);
-        if (token == "]")
-            token = nextToken(inp);
-        else
-            cout << line << ": syntax error in ]\n";
-    }
-}
-
-void expr2(ifstream &inp, ofstream &outp, string &token)
-{
-}
-
-// // void expr3(ifstream &inp, ofstream &outp, string &token)
-// {
-//     if (token == "+" || token == "-")
-//     {
-//         token = nextToken(inp);
-//         expr(inp, outp, token);
-//     }
-//     else if (token == "|")
-//     {
-//         token = nextToken(inp);
-//         expr(inp, outp, token);
-//         if (token == "|")
-//         {
-//             /* code */
-//         }
-//         else
-//             cout << line << ": syntax error in |\n";
-//     }
-//     else if (token == "[")
-//     {
-//         token = nextToken(inp);
-//         expr(inp, outp, token);
-//         if (token == "]")
-//         {
-//             /* code */
-//         }
-//         else
-//             cout << line << ": syntax error in ]\n";
-//     }
-//     else if (token == "(")
-//     {
-//         token = nextToken(inp);
-//         expr(inp, outp, token);
-//         if (token == ")")
-//         {
-//             /* code */
-//         }
-//         else
-//             cout << line << ": syntax error )\n";
-//     }
-//     else if (token == "\\")
-//     {
-//         token = nextToken(inp);
-//         if (token == "{")
-//         {
-//             token = nextToken(inp);
-//             expr(inp, outp, token);
-//             if (token == "\\")
-//             {
-//                 token = nextToken(inp);
-//                 if (token == "}")
-//                 {
-//                     /* code */
-//                 }
-//                 else
-//                     cout << line << ": syntax error in\\}\n";
-//             }
-//             else
-//                 cout << line << ": syntax error in \\\n";
-//         }
-//         else
-//         {
-//             symbols(inp, outp, token);
-//             expr(inp, outp, token);
-//         }
-//     }
-//     else if (isWord(token))
-//     {
-//         token = nextToken(inp);
-//         if (token == "(")
-//         {
-//             token = nextToken(inp);
-//             clist(inp, outp, token);
-//             if (token == ")")
-//             {
-//             }
-//             else
-//                 cout << line << ": syntax error in )\n";
-//         }
-//     }
-//     else if (isNumber(token))
-//     {
-//     }
-// }

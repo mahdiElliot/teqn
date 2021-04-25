@@ -4,6 +4,7 @@ start -> .BL expr .EL
 expr -> expr symbols expr
         expr symbols2 expr
         expr \symbols2 expr
+        expr symbols3 expr
         expr [ expr ]
         expr ( expr )
         expr { expr }
@@ -18,14 +19,15 @@ expr -> expr symbols expr
         expr symbols
         \symbols2 expr
         expr \symbols2
-        \expr s
+        symbols3 expr
+        epxr symbols3
+        \iden expr
         expr prime
-        symbols2
+        prime
+        \symbols2
+        symbols3
         iden
         num
-
-s ->    \expr s
-        LAMBDA
 
 symbols ->      +
                 -
@@ -40,15 +42,16 @@ symbols ->      +
                 _
 
 symbols2 ->     ,
-                .
-                >
-                <
                 ;
                 !
                 |
                 {
                 }
-                (
+
+symbols3 ->     (
                 )
+                [
+                ]
+                symbols2
 
 prime -> '
