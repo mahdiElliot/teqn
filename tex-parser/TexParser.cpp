@@ -33,6 +33,7 @@ void TexParser::start()
 
 void TexParser::expr(std::string token)
 {
+    
 }
 
 bool TexParser::isNumber(std::string number)
