@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../utils/Tokenizer.h"
 #include "TexParser.h"
 
@@ -29,11 +30,51 @@ void TexParser::start()
         return;
     token = Tokenizer::nextToken(latexf);
     expr(token);
+    if (token == ".EL")
+        start();
 }
 
 void TexParser::expr(std::string token)
 {
-    
+    expr1(token);
+    while (token[0] == Constants::OPENBRACE)
+    {
+        token = Tokenizer::nextToken(latexf);
+        expr1(token);
+        if (token[0] == Constants::CLOSEBRACE)
+            token = Tokenizer::nextToken(latexf);
+        else
+            std::cout << Tokenizer::getLine() << ": syntax error in }\n";
+    }
+}
+
+void TexParser::expr1(std::string token)
+{
+    if (token[0] == Constants::BACKSLASH)
+    {
+        if (token.substr(1) == "sqrt")
+        {
+            token = Tokenizer::nextToken(latexf);
+            expr2(token);
+        }
+    } else if(isNumber(token))
+    {
+
+    }
+}
+
+void TexParser::expr2(std::string token)
+{
+    expr(token);
+    while (token[0] == Constants::OPENBRACKET)
+    {
+        token = Tokenizer::nextToken(latexf);
+        expr(token);
+        if (token[0] == Constants::CLOSEBRACKET)
+            token = Tokenizer::nextToken(latexf);
+        else
+            std::cout << Tokenizer::getLine() << ": syntax error in ]\n";
+    }
 }
 
 bool TexParser::isNumber(std::string number)

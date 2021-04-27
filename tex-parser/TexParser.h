@@ -13,6 +13,8 @@ class TexParser
 
         void start();
         void expr(std::string token);
+        void expr1(std::string token);
+        void expr2(std::string token);
 
         bool isNumber(std::string number);
 
