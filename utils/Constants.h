@@ -30,10 +30,16 @@ class Constants
         static const char AND = '&';
         static const char OR = '|';
         static const char NOT = '!';
+        static const char HASH = '#';
 
         //special words
         static const char *OVER;
         static const char *FRAC;
+        static const char *SQRT;
+        static const char *RULE;
+        static const char *PENALTY;
+        static const char *DISCRETIONARY;
 
 };
+#include "Constants.cpp"
 #endif

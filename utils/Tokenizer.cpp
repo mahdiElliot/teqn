@@ -70,7 +70,7 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
 
                 while ((c != ' ' || c != Constants::BACKSLASH) &&
                        ((c >= 'a' && c <= 'z') ||
-                        (c >= 'A' && c <= 'Z') || isDigit(c)) &&
+                        (c >= 'A' && c <= 'Z')) &&
                        !myfile.eof())
                 {
                     token = token + c;

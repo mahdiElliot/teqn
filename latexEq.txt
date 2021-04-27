@@ -1,1 +1,1 @@
-.BL \sqrt[n]{avs} .EL
+.BL \sqrt [n]a} .EL
