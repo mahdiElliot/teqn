@@ -39,7 +39,32 @@ class Constants
         static const char *RULE;
         static const char *PENALTY;
         static const char *DISCRETIONARY;
+        static const char *OPENOUT;
+        static const char *CLOSEOUT;
+        static const char *WRITE;
+        static const char *IMMEDIATE;
+        static const char *SHIPOUT;
+        static const char *SPECIAL;
 
+
+        static const char *LEFT;
+        static const char *RIGHT;
+
+        static const char *GLUE;
+        static const char *SMALLSKIP;
+        static const char *MEDSKIP;
+        static const char *VSKIP;
+        static const char *HSKIP;
+        static const char *ENSKIP;
+        static const char *LDOTS;
+        static const char *FRENCHSPACING;
+        static const char *NONFRENCHSPACING;
+        static const char *TENRM;
+        static const char *KERN;
+        static const char *SPACESKIP;
+        static const char *XSPACESKIP;
+        static const char *MATHCHOICE;
+        static const char *RELPENALTY;
 };
 #include "Constants.cpp"
 #endif

@@ -1,4 +1,10 @@
-start -> .BL expr .EL
+start -> .BL body .EL
+
+body -> stmt
+        stmt body
+
+stmt -> expr
+        openAtom body closeAtom
 
         
 expr -> expr symbols expr
