@@ -1,1 +1,1 @@
-.BL \sqrt [afsa]]{sdsd}{} .EL
+.BL \left( \sqrt[]{} \right) .EL

@@ -45,12 +45,13 @@ void TexParser::body(std::string &token)
 {
     if (token == ENDEXP)
         return;
-    bool e = (token[0] == Constants::CLOSEBRACE && openClose.back() == std::string(1, Constants::OPENBRACE)) ||
-             (token[0] == Constants::CLOSEBRACKET && openClose.back() == std::string(1, Constants::OPENBRACKET));
 
-    if (e)
-        return;
-        
+    if (openClose.size())
+        if ((token[0] == Constants::CLOSEBRACE && openClose.back() == std::string(1, Constants::OPENBRACE)) ||
+            (token[0] == Constants::CLOSEBRACKET && openClose.back() == std::string(1, Constants::OPENBRACKET)) ||
+            (token == Constants::RIGHT && openClose.back() == Constants::LEFT))
+            return;
+
     stmt(token);
     if (!latexf.eof() && token != ENDEXP)
     {
@@ -64,6 +65,10 @@ bool TexParser::unexpectedTokens(std::string &token)
     {
         std::cout << "} without {\n";
     }
+    else if (token == Constants::RIGHT)
+    {
+        std::cout << syntaxError("right without left");
+    }
     else
         return false;
 
@@ -74,7 +79,7 @@ void TexParser::stmt(std::string &token)
 {
     if (token[0] == Constants::OPENBRACE)
     {
-        openClose.push_back(std::string(1, token[0]));
+        openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
         body(token);
         if (token[0] != Constants::CLOSEBRACE)
@@ -85,25 +90,9 @@ void TexParser::stmt(std::string &token)
             openClose.pop_back();
         token = Tokenizer::nextToken(latexf);
     }
-    else if (token == Constants::LEFT)
+    else if (boundaryItem(token))
     {
         token = Tokenizer::nextToken(latexf);
-        if (token[0] == Constants::OPENBRACKET)
-        {
-        }
-        else if (token[0] == Constants::OPENPARENTHESIS)
-        {
-        }
-    }
-    else if (token == Constants::RIGHT)
-    {
-        token = Tokenizer::nextToken(latexf);
-        if (token[0] == Constants::CLOSEBRACKET)
-        {
-        }
-        else if (token[0] == Constants::CLOSEPARENTHESIS)
-        {
-        }
     }
     else if (unexpectedTokens(token))
     {
@@ -121,8 +110,7 @@ void TexParser::expr(std::string &token)
     {
         syntaxError("# not allowed");
     }
-
-    if (token[0] == Constants::BACKSLASH)
+    else if (token[0] == Constants::BACKSLASH)
     {
         if (!isWord(token.substr(1)) && token[1] != Constants::SLASH && token[1] != Constants::BACKSLASH)
         {
@@ -139,9 +127,6 @@ void TexParser::expr(std::string &token)
         {
         }
         else if (whatsit(token))
-        {
-        }
-        else if (boundaryItem(token))
         {
         }
         else if (glues(token))
@@ -170,22 +155,6 @@ void TexParser::expr(std::string &token)
     }
 }
 
-void TexParser::expr1(std::string &token)
-{
-    if (token[0] == Constants::OPENBRACE)
-    {
-        token = Tokenizer::nextToken(latexf);
-        expr(token);
-        if (token[0] == Constants::CLOSEBRACE)
-            token = Tokenizer::nextToken(latexf);
-        else
-        {
-            std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
-            token = Tokenizer::nextToken(latexf);
-        }
-    }
-}
-
 void TexParser::expr2(std::string &token)
 {
 }
@@ -194,34 +163,14 @@ void TexParser::sqrtExpr(std::string &token)
 {
     if (token[0] == Constants::OPENBRACKET)
     {
-        openClose.push_back(std::string(1, token[0]));
+        openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
         body(token);
         if (token[0] == Constants::CLOSEBRACKET)
         {
             openClose.pop_back();
             token = Tokenizer::nextToken(latexf);
-            if (token[0] == Constants::OPENBRACE)
-            {
-                openClose.push_back(std::string(1, token[0]));
-                token = Tokenizer::nextToken(latexf);
-                body(token);
-                if (token[0] != Constants::CLOSEBRACE)
-                {
-                    std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
-                }
-                else
-                    openClose.pop_back();
-
-                token = Tokenizer::nextToken(latexf);
-            }
-            else
-            {
-                if (unexpectedTokens(token))
-                {
-                }
-                token = Tokenizer::nextToken(latexf);
-            }
+            expr1(token);
         }
         else
         {
@@ -229,9 +178,15 @@ void TexParser::sqrtExpr(std::string &token)
             token = Tokenizer::nextToken(latexf);
         }
     }
-    else if (token[0] == Constants::OPENBRACE)
+    else
+        expr1(token);
+}
+
+void TexParser::expr1(std::string &token)
+{
+    if (token[0] == Constants::OPENBRACE)
     {
-        openClose.push_back(std::string(1, token[0]));
+        openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
         body(token);
         if (token[0] != Constants::CLOSEBRACE)
@@ -319,9 +274,42 @@ bool TexParser::boundaryItem(std::string &token)
     bool e = true;
     if (token == Constants::LEFT)
     {
-    }
-    else if (token == Constants::RIGHT)
-    {
+        openClose.push_back(token);
+        token = Tokenizer::nextToken(latexf);
+        if (token[0] == Constants::OPENBRACKET)
+        {
+            token = Tokenizer::nextToken(latexf);
+            body(token);
+            if (token == Constants::RIGHT)
+            {
+                openClose.pop_back();
+                token = Tokenizer::nextToken(latexf);
+                if (token[0] == Constants::CLOSEBRACKET)
+                {
+                }
+                else
+                    std::cout << syntaxError(std::string(1, Constants::CLOSEBRACKET));
+            }
+            else
+                std::cout << syntaxError("right");
+        }
+        else if (token[0] == Constants::OPENPARENTHESIS)
+        {
+            token = Tokenizer::nextToken(latexf);
+            body(token);
+            if (token == Constants::RIGHT)
+            {
+                openClose.pop_back();
+                token = Tokenizer::nextToken(latexf);
+                if (token[0] == Constants::CLOSEPARENTHESIS)
+                {
+                }
+                else
+                    std::cout << syntaxError(std::string(1, Constants::CLOSEPARENTHESIS));
+            }
+            else
+                std::cout << syntaxError("right");
+        }
     }
     else
         e = false;

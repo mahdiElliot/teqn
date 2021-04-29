@@ -1,7 +1,5 @@
 #include "Constants.h"
 
-const char *Constants::OVER = "\\over";
-const char *Constants::FRAC = "\\frac";
 const char *Constants::SQRT = "\\sqrt";
 const char *Constants::RULE = "\\rule";
 const char *Constants::PENALTY = "\\penalty";
@@ -29,4 +27,14 @@ const char *Constants::SPACESKIP = "\\spaceskip";
 const char *Constants::XSPACESKIP = "\\xspaceskip";
 const char *Constants::MATHCHOICE = "\\mathchoice";
 const char *Constants::RELPENALTY = "\\relpenalty";
-
+const char *Constants::OVER = "\\over";
+const char *Constants::ATOP = "\\atop";
+const char *Constants::OVERWITHDELIMS = "\\overwithdelims";
+const char *Constants::ATOPWITHDELIMS = "\\atopwithdelims";
+const char *Constants::ABOVEWITHDELIMS = "\\overwithdelims";
+const char *Constants::FRAC = "\\frac";
+const char *Constants::VCENTER = "\\vcenter";
+const char *Constants::OVERLINE = "\\overline";
+const char *Constants::UNDERLINEW = "\\underline";
+const char *Constants::RADICAL = "\\radical";
+const char *Constants::MATHACCENT = "\\mathaccent";
