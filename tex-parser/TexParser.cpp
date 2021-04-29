@@ -132,10 +132,9 @@ void TexParser::expr(std::string &token)
         else if (glues(token))
         {
         }
-        if (token == Constants::SQRT)
+        else if (radAtom(token))
         {
             token = Tokenizer::nextToken(latexf);
-            sqrtExpr(token);
         }
     }
     else if (binAtom(token))
@@ -290,6 +289,10 @@ bool TexParser::boundaryItem(std::string &token)
                 else
                     std::cout << syntaxError(std::string(1, Constants::CLOSEBRACKET));
             }
+            else if (token[0] == Constants::DOT)
+            {
+
+            }
             else
                 std::cout << syntaxError("right");
         }
@@ -306,6 +309,51 @@ bool TexParser::boundaryItem(std::string &token)
                 }
                 else
                     std::cout << syntaxError(std::string(1, Constants::CLOSEPARENTHESIS));
+            }
+            else if (token[0] == Constants::DOT)
+            {
+                
+            }
+            else
+                std::cout << syntaxError("right");
+        }
+        else if (token[0] == Constants::OR)
+        {
+            token = Tokenizer::nextToken(latexf);
+            body(token);
+            if (token == Constants::RIGHT)
+            {
+                openClose.pop_back();
+                token = Tokenizer::nextToken(latexf);
+                if (token[0] == Constants::OR)
+                {
+                }
+                else
+                    std::cout << syntaxError(std::string(1, Constants::OR));
+            }
+            else if (token[0] == Constants::DOT)
+            {
+                
+            }
+            else
+                std::cout << syntaxError("right");
+        }
+        else if (token[0] == Constants::DOT)
+        {
+        }
+        else if (token == "\\{")
+        {
+            token = Tokenizer::nextToken(latexf);
+            body(token);
+            if (token == Constants::RIGHT)
+            {
+                openClose.pop_back();
+                token = Tokenizer::nextToken(latexf);
+                if (token == "\\}")
+                {
+                }
+                else
+                    std::cout << syntaxError("\\}");
             }
             else
                 std::cout << syntaxError("right");
@@ -414,6 +462,22 @@ bool TexParser::punctAtom(std::string &token)
     {
         e = true;
     }
+    return e;
+}
+
+bool TexParser::radAtom(std::string &token)
+{
+    bool e = true;
+    if (token == Constants::SQRT)
+    {
+        token = Tokenizer::nextToken(latexf);
+        sqrtExpr(token);
+    }
+    else if (token == Constants::RADICAL)
+    {
+    }
+    else
+        e = false;
     return e;
 }
 

@@ -33,6 +33,9 @@ public:
     static const char HASH = '#';
 
     //special words
+    static const char *vERT;
+    static const char *VERT;
+
     static const char *RULE;
     static const char *PENALTY;
     static const char *DISCRETIONARY;

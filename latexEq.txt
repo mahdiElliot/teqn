@@ -1,1 +1,1 @@
-.BL \left( \sqrt[]{} \right) .EL
+.BL \left. .EL

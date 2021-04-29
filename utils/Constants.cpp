@@ -1,5 +1,7 @@
 #include "Constants.h"
 
+const char *Constants::vERT = "\\vert";
+const char *Constants::VERT = "\\Vert";
 const char *Constants::SQRT = "\\sqrt";
 const char *Constants::RULE = "\\rule";
 const char *Constants::PENALTY = "\\penalty";
