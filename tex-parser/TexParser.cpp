@@ -43,22 +43,47 @@ void TexParser::start()
 
 void TexParser::body(std::string &token)
 {
+    if (token == ENDEXP)
+        return;
+    bool e = (token[0] == Constants::CLOSEBRACE && openClose.back() == std::string(1, Constants::OPENBRACE)) ||
+             (token[0] == Constants::CLOSEBRACKET && openClose.back() == std::string(1, Constants::OPENBRACKET));
+
+    if (e)
+        return;
+        
     stmt(token);
     if (!latexf.eof() && token != ENDEXP)
+    {
         body(token);
+    }
+}
+
+bool TexParser::unexpectedTokens(std::string &token)
+{
+    if (token[0] == Constants::CLOSEBRACE)
+    {
+        std::cout << "} without {\n";
+    }
+    else
+        return false;
+
+    return true;
 }
 
 void TexParser::stmt(std::string &token)
 {
     if (token[0] == Constants::OPENBRACE)
     {
+        openClose.push_back(std::string(1, token[0]));
         token = Tokenizer::nextToken(latexf);
         body(token);
         if (token[0] != Constants::CLOSEBRACE)
         {
             std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
-            token = Tokenizer::nextToken(latexf);
         }
+        else
+            openClose.pop_back();
+        token = Tokenizer::nextToken(latexf);
     }
     else if (token == Constants::LEFT)
     {
@@ -80,13 +105,14 @@ void TexParser::stmt(std::string &token)
         {
         }
     }
-    else if (token[0] == Constants::CLOSEBRACE)
+    else if (unexpectedTokens(token))
     {
-        std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
         token = Tokenizer::nextToken(latexf);
     }
     else
+    {
         expr(token);
+    }
 }
 
 void TexParser::expr(std::string &token)
@@ -134,6 +160,14 @@ void TexParser::expr(std::string &token)
     {
         token = Tokenizer::nextToken(latexf);
     }
+    else if (token[0] == Constants::CLOSEBRACKET)
+    {
+        token = Tokenizer::nextToken(latexf);
+    }
+    else if (token[0] == Constants::CLOSEPARENTHESIS)
+    {
+        token = Tokenizer::nextToken(latexf);
+    }
 }
 
 void TexParser::expr1(std::string &token)
@@ -141,7 +175,7 @@ void TexParser::expr1(std::string &token)
     if (token[0] == Constants::OPENBRACE)
     {
         token = Tokenizer::nextToken(latexf);
-        stmt(token);
+        expr(token);
         if (token[0] == Constants::CLOSEBRACE)
             token = Tokenizer::nextToken(latexf);
         else
@@ -160,15 +194,34 @@ void TexParser::sqrtExpr(std::string &token)
 {
     if (token[0] == Constants::OPENBRACKET)
     {
+        openClose.push_back(std::string(1, token[0]));
         token = Tokenizer::nextToken(latexf);
-        stmt(token);
+        body(token);
         if (token[0] == Constants::CLOSEBRACKET)
         {
+            openClose.pop_back();
             token = Tokenizer::nextToken(latexf);
             if (token[0] == Constants::OPENBRACE)
-                expr1(token);
+            {
+                openClose.push_back(std::string(1, token[0]));
+                token = Tokenizer::nextToken(latexf);
+                body(token);
+                if (token[0] != Constants::CLOSEBRACE)
+                {
+                    std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
+                }
+                else
+                    openClose.pop_back();
+
+                token = Tokenizer::nextToken(latexf);
+            }
             else
-                expr(token);
+            {
+                if (unexpectedTokens(token))
+                {
+                }
+                token = Tokenizer::nextToken(latexf);
+            }
         }
         else
         {
@@ -177,9 +230,26 @@ void TexParser::sqrtExpr(std::string &token)
         }
     }
     else if (token[0] == Constants::OPENBRACE)
-        expr1(token);
+    {
+        openClose.push_back(std::string(1, token[0]));
+        token = Tokenizer::nextToken(latexf);
+        body(token);
+        if (token[0] != Constants::CLOSEBRACE)
+        {
+            std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
+        }
+        else
+            openClose.pop_back();
+
+        token = Tokenizer::nextToken(latexf);
+    }
     else
-        stmt(token);
+    {
+        if (unexpectedTokens(token))
+        {
+        }
+        token = Tokenizer::nextToken(latexf);
+    }
 }
 
 bool TexParser::rules(std::string &token)

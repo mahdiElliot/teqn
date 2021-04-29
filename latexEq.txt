@@ -1,1 +1,1 @@
-.BL \sqrt {n} .EL
+.BL \sqrt [afsa]]{sdsd}{} .EL

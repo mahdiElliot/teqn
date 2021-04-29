@@ -16,14 +16,18 @@ class TexParser
         std::ifstream latexf;
         std::ofstream output;
 
+        std::vector<std::string> openClose;
+
         void start();
         void body(std::string &token);
+        void body2(std::string &token);
         void stmt(std::string &token);
         void expr(std::string &token);
         void expr1(std::string &token);
         void expr2(std::string &token);
         void sqrtExpr(std::string &token);
 
+        bool unexpectedTokens(std::string &token);
         bool rules(std::string &token);
         bool discretionary(std::string &token);
         bool penalty(std::string &token);
