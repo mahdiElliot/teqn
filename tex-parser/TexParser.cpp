@@ -67,13 +67,13 @@ void TexParser::start()
         return;
     }
     openClose.push_back(token);
-    output << translate[token];
+    output << translate[token]<< " ";
     token = Tokenizer::nextToken(latexf);
     std::vector<std::string> mainScope;
     body(token, mainScope);
     if (token == ENDEXP)
     {
-        output << translate[token];
+        output << translate[token]<<" ";
         start();
     }
     else if (latexf.eof())
