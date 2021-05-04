@@ -26,12 +26,58 @@ private:
         {Constants::RFLOOR, "\\(rf"},
         {Constants::LCEIL, "\\(lc"},
         {Constants::RCEIL, "\\(rc"},
+        {Constants::SINGLEUPARROW, "\\(ua"},
+        {Constants::SINGLEDOWNARROW, "\\(da"},
+        {Constants::OVER, "over"},
+        {Constants::FRAC, "over"},
+        {Constants::ATOP, "above"},
+        {Constants::OVERLINE, "bar"},
+        {Constants::UNDERLINE, "under"},
+        {Constants::ALPHA, "alpha"},
+        {Constants::BETA, "beta"},
+        {Constants::CHI, "chi"},
+        {Constants::DELTA, "delta"},
+        {Constants::EPSILON, "epsilon"},
+        {Constants::ETA, "eta"},
+        {Constants::GAMMA, "gamma"},
+        {Constants::IOTA, "iota"},
+        {Constants::KAPPA, "kappa"},
+        {Constants::LAMBDA, "lambda"},
+        {Constants::MU, "mu"},
+        {Constants::NU, "nu"},
+        {Constants::OMEGA, "omega"},
+        {Constants::PHI, "phi"},
+        {Constants::PI, "pi"},
+        {Constants::PSI, "psi"},
+        {Constants::RHO, "rho"},
+        {Constants::SIGMA, "sigma"},
+        {Constants::TAU, "tau"},
+        {Constants::THETA, "theta"},
+        {Constants::UPSILON, "upsilon"},
+        {Constants::XI, "xi"},
+        {Constants::ZETA, "zeta"},
+        {Constants::DIGAMMA, "digamma"},//unknown
+        {Constants::VAREPSILON, "\\(*e"},
+        {Constants::VARKAPPA, "varkappa"},//unknown
+        {Constants::VARPHI, "varphi"},//unknown
+        {Constants::VARPI, "varpi"}, //unknown
+        {Constants::VARRHO, "varrho"}, //unknown
+        {Constants::VARSIGMA, "\\(ts"},
+        {Constants::UDELTA, "DELTA"},
+        {Constants::UGAMMA, "GAMMA"},
+        {Constants::ULAMBDA, "LAMBDA"},
+        {Constants::UOMEGA, "OMEGA"},
+        {Constants::UPHI, "PHI"},
+        {Constants::UPI, "PI"},
+        {Constants::UPSI, "PSI"},
+        {Constants::USIGMA, "SIGMA"},
+        {Constants::SUM, "sum"},
+        {Constants::PROD, "prod"},
         {Constants::BACKSLASH, "\\"},
         {"\\|", "||"},
         {"\\{", "{"},
         {"\\}", "}"},
-        {std::string(1, Constants::POWER), "sup"}
-        };
+        {std::string(1, Constants::POWER), "sup"}};
 
     std::string syntaxError(std::string error);
 

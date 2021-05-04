@@ -34,6 +34,49 @@ public:
     static const char COMMENT = '%';
     static const char *BACKSLASH;
 
+    //greek and hebrew
+    static const char *ALPHA;
+    static const char *BETA;
+    static const char *CHI;
+    static const char *DELTA;
+    static const char *EPSILON;
+    static const char *ETA;
+    static const char *GAMMA;
+    static const char *IOTA;
+    static const char *KAPPA;
+    static const char *LAMBDA;
+    static const char *MU;
+    static const char *NU;
+    static const char *OMEGA;
+    static const char *PHI;
+    static const char *PI;
+    static const char *PSI;
+    static const char *RHO;
+    static const char *SIGMA;
+    static const char *TAU;
+    static const char *THETA;
+    static const char *UPSILON;
+    static const char *XI;
+    static const char *ZETA;
+    static const char *DIGAMMA;
+    static const char *VAREPSILON;
+    static const char *VARKAPPA;
+    static const char *VARPHI;
+    static const char *VARPI;
+    static const char *VARRHO;
+    static const char *VARSIGMA;
+    static const char *VARTHETA;
+    static const char *UDELTA;
+    static const char *UGAMMA;
+    static const char *ULAMBDA;
+    static const char *UOMEGA;
+    static const char *UPHI;
+    static const char *UPI;
+    static const char *UPSI;
+    static const char *USIGMA;
+
+
+
     //special words
     static const char *SINGLEVERT;
     static const char *DOUBLEVERT;
@@ -97,6 +140,9 @@ public:
     static const char *DOUBLEUPARROW;
     static const char *SINGLEDOWNARROW;
     static const char *DOUBLEDOWNARROW;
+
+    static const char *SUM;
+    static const char *PROD;
     
 
 };
