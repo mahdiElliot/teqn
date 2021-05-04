@@ -14,6 +14,8 @@ private:
     const std::string ENDEXP = ".EL";
 
     const std::unordered_map<std::string, std::string> translate = {
+        {STARTEXP, ".EQ"},
+        {ENDEXP, ".EN"},
         {Constants::SINGLEVERT, "|"},
         {Constants::DOUBLEVERT, "||"},
         {Constants::SQRT, "sqrt"},
@@ -32,7 +34,7 @@ private:
         {Constants::FRAC, "over"},
         {Constants::ATOP, "above"},
         {Constants::OVERLINE, "bar"},
-        {Constants::UNDERLINE, "under"},
+        {Constants::UNDERLINEW, "under"},
         {Constants::ALPHA, "alpha"},
         {Constants::BETA, "beta"},
         {Constants::CHI, "chi"},
@@ -77,7 +79,8 @@ private:
         {"\\|", "||"},
         {"\\{", "{"},
         {"\\}", "}"},
-        {std::string(1, Constants::POWER), "sup"}};
+        {std::string(1, Constants::POWER), "sup"}
+        };
 
     std::string syntaxError(std::string error);
 
