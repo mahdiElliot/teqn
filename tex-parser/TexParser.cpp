@@ -66,14 +66,14 @@ void TexParser::start()
         std::cout << "first of expression not specified\n";
         return;
     }
-    openClose.push_back(".BL");
-    output << ".EQ ";
+    openClose.push_back(token);
+    output << translate[token];
     token = Tokenizer::nextToken(latexf);
     std::vector<std::string> mainScope;
     body(token, mainScope);
     if (token == ENDEXP)
     {
-        output << ".EN ";
+        output << translate[token];
         start();
     }
     else if (latexf.eof())

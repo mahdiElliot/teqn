@@ -13,7 +13,7 @@ private:
     const std::string STARTEXP = ".BL";
     const std::string ENDEXP = ".EL";
 
-    const std::unordered_map<std::string, std::string> translate = {
+    std::unordered_map<std::string, std::string> translate = {
         {STARTEXP, ".EQ"},
         {ENDEXP, ".EN"},
         {Constants::SINGLEVERT, "|"},
