@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <unordered_map>
+#include "../utils/Constants.h"
 
 class TexParser
 {
@@ -13,7 +14,23 @@ private:
     const std::string ENDEXP = ".EL";
 
     const std::unordered_map<std::string, std::string> translate = {
-        
+        {Constants::SINGLEVERT, "|"},
+        {Constants::DOUBLEVERT, "||"},
+        {Constants::SQRT, "sqrt"},
+        {Constants::LEFT, "left"},
+        {Constants::RIGHT, "right"},
+        {Constants::OVER, "over"},
+        {Constants::LANGLE, "left <"},
+        {Constants::RANGLE, "right >"},
+        {Constants::LFLOOR, "\\(lf"},
+        {Constants::RFLOOR, "\\(rf"},
+        {Constants::LCEIL, "\\(lc"},
+        {Constants::RCEIL, "\\(rc"},
+        {Constants::BACKSLASH, "\\"},
+        {"\\|", "||"},
+        {"\\{", "{"},
+        {"\\}", "}"},
+        {std::string(1, Constants::POWER), "sup"}
         };
 
     std::string syntaxError(std::string error);
