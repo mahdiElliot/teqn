@@ -13,20 +13,7 @@ private:
     const std::string ENDEXP = ".EL";
 
     const std::unordered_map<std::string, std::string> translate = {
-        {Constants::SINGLEVERT, "|"},
-        {Constants::DOUBLEVERT, "||"},
-        {Constants::SQRT, "sqrt"},
-        {Constants::LEFT, "left"},
-        {Constants::RIGHT, "right"},
-        {Constants::OVER, "over"},
-        {Constants::LANGLE, "left <"},
-        {Constants::RANGLE, "right >"},
-        {Constants::LFLOOR, "\\(lf"},
-        {Constants::RFLOOR, "\\(rf"},
-        {"\\|", "||"},
-        {"\\{", "{"},
-        {"\\}", "}"},
-        {std::string(1, Constants::POWER), "sup"}
+        
         };
 
     std::string syntaxError(std::string error);

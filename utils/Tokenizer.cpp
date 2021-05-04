@@ -35,7 +35,7 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
             {
                 token = c;
             }
-            else if (c == Constants::BACKSLASH)
+            else if (c == Constants::BACKS)
             {
                 token = c;
                 myfile.get(c);
@@ -49,7 +49,7 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
 
                 myfile.get(c);
 
-                while ((c != ' ' || c != Constants::BACKSLASH) &&
+                while ((c != ' ' || c != Constants::BACKS) &&
                        ((c >= 'a' && c <= 'z') ||
                         (c >= 'A' && c <= 'Z')) &&
                        !myfile.eof())
@@ -105,7 +105,7 @@ std::string Tokenizer::nextToken2(std::ifstream &myfile)
                     myfile.unget();
                 }
             }
-            else if (c == Constants::BACKSLASH)
+            else if (c == Constants::BACKS)
             {
                 token = c;
                 myfile.get(c);
@@ -119,7 +119,7 @@ std::string Tokenizer::nextToken2(std::ifstream &myfile)
 
                 myfile.get(c);
 
-                while ((c != ' ' || c != Constants::BACKSLASH) &&
+                while ((c != ' ' || c != Constants::BACKS) &&
                        ((c >= 'a' && c <= 'z') ||
                         (c >= 'A' && c <= 'Z')) &&
                        !myfile.eof())
