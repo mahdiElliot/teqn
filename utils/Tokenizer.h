@@ -11,6 +11,8 @@ private:
 public:
     static std::string nextToken(std::ifstream &myfile);
 
+    static std::string nextToken2(std::ifstream &myfile);
+
     static bool isDigit(char c);
 
     static int getLine();

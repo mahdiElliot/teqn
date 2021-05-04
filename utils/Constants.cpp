@@ -1,7 +1,8 @@
 #include "Constants.h"
 
-const char *Constants::vERT = "\\vert";
-const char *Constants::VERT = "\\Vert";
+const char *Constants::BACKSLASH = "\\backslash";
+const char *Constants::SINGLEVERT = "\\vert";
+const char *Constants::DOUBLEVERT = "\\Vert";
 const char *Constants::SQRT = "\\sqrt";
 const char *Constants::RULE = "\\rule";
 const char *Constants::PENALTY = "\\penalty";
@@ -40,3 +41,13 @@ const char *Constants::OVERLINE = "\\overline";
 const char *Constants::UNDERLINEW = "\\underline";
 const char *Constants::RADICAL = "\\radical";
 const char *Constants::MATHACCENT = "\\mathaccent";
+const char *Constants::LANGLE = "\\langle";
+const char *Constants::RANGLE = "\\rangle";
+const char *Constants::LFLOOR = "\\lfloor";
+const char *Constants::RFLOOR = "\\rfloor";
+const char *Constants::LCEIL = "\\lceil";
+const char *Constants::RCEIL = "\\rceil";
+const char *Constants::SINGLEUPARROW = "\\uparrow";
+const char *Constants::DOUBLEUPARROW = "\\Uparrow";
+const char *Constants::SINGLEDOWNARROW = "\\downarrow";
+const char *Constants::DOUBLEDOWNARROW = "\\Downarrow";

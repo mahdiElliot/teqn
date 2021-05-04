@@ -22,14 +22,65 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
     {
         myfile.get(c);
         short a = (short)c;
-        while ((c == ' ' || c == '\n' || c == '\r' || c == '%') && !myfile.eof())
+        while ((c == ' ') && !myfile.eof())
         {
-            if (c == '%')
+            if (c == '\n')
+                line++;
+            myfile.get(c);
+        }
+
+        if (!myfile.eof())
+        {
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || isDigit(c) || c == Constants::DOT)
             {
-                myfile.get(c);
-                while ((c != '\r' || c != '%') && !myfile.eof())
-                    myfile.get(c);
+                token = c;
             }
+            else if (c == Constants::BACKSLASH)
+            {
+                token = c;
+                myfile.get(c);
+                if (!((c >= 'a' && c <= 'z') ||
+                      (c >= 'A' && c <= 'Z')) &&
+                    !myfile.eof())
+                    return token + c;
+
+                if (c != ' ' && !myfile.eof())
+                    token = token + c;
+
+                myfile.get(c);
+
+                while ((c != ' ' || c != Constants::BACKSLASH) &&
+                       ((c >= 'a' && c <= 'z') ||
+                        (c >= 'A' && c <= 'Z')) &&
+                       !myfile.eof())
+                {
+                    token = token + c;
+                    myfile.get(c);
+                }
+
+                if (!myfile.eof())
+                {
+                    myfile.unget();
+                }
+            }
+            else
+                token = c;
+        }
+    }
+    return token;
+}
+
+std::string Tokenizer::nextToken2(std::ifstream &myfile)
+{
+    char c;
+    std::string token = "";
+
+    if (!myfile.eof())
+    {
+        myfile.get(c);
+        short a = (short)c;
+        while ((c == ' ') && !myfile.eof())
+        {
             if (c == '\n')
                 line++;
             myfile.get(c);
@@ -88,3 +139,4 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
     }
     return token;
 }
+

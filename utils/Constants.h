@@ -21,7 +21,7 @@ public:
     static const char MULT = '*';
     static const char POWER = '^';
     static const char SLASH = '/';
-    static const char BACKSLASH = '\\';
+    static const char BACKS = '\\';
     static const char SINGLEQUOTE = '\'';
     static const char DOUBLEQUOTE = '\"';
     static const char BACKQUOTE = '`';
@@ -31,10 +31,12 @@ public:
     static const char OR = '|';
     static const char NOT = '!';
     static const char HASH = '#';
+    static const char COMMENT = '%';
+    static const char *BACKSLASH;
 
     //special words
-    static const char *vERT;
-    static const char *VERT;
+    static const char *SINGLEVERT;
+    static const char *DOUBLEVERT;
 
     static const char *RULE;
     static const char *PENALTY;
@@ -84,6 +86,19 @@ public:
     static const char *OVERWITHDELIMS;
     static const char *ATOPWITHDELIMS;
     static const char *ABOVEWITHDELIMS;
+
+    static const char *LANGLE;
+    static const char *RANGLE;
+    static const char *LFLOOR;
+    static const char *RFLOOR;
+    static const char *LCEIL;
+    static const char *RCEIL;
+    static const char *SINGLEUPARROW;
+    static const char *DOUBLEUPARROW;
+    static const char *SINGLEDOWNARROW;
+    static const char *DOUBLEDOWNARROW;
+    
+
 };
 #include "Constants.cpp"
 #endif
