@@ -316,7 +316,7 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> itemsS
     bool e = true;
     if (token == Constants::LEFT)
     {
-        output << token.substr(1) << " ";
+        output << translate[token] << " ";
         openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
         if (token[0] == Constants::OPENBRACKET)
@@ -366,7 +366,7 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> itemsS
         }
         else if (token == "\\{")
         {
-            output << token.substr(1) << " ";
+            output << translate[token] << " ";
             token = Tokenizer::nextToken(latexf);
             std::vector<std::string> localScope;
             body(token, localScope);
@@ -388,7 +388,7 @@ void TexParser::rightBoundaryAtom(std::string &token, std::string rightItem)
             std::cout << syntaxError("right without left");
             return;
         }
-        output << token.substr(1) << " ";
+        output << translate[token] << " ";
         openClose.pop_back();
         token = Tokenizer::nextToken(latexf);
         if (token == rightItem)
@@ -465,7 +465,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
     }
     else if (token[0] == Constants::POWER)
     {
-        output << "sup ";
+        output << translate[token] << " ";
         token = Tokenizer::nextToken(latexf);
         if (token[0] == Constants::POWER)
         {
@@ -553,7 +553,7 @@ bool TexParser::radAtom(std::string &token, std::vector<std::string> itemsScope)
     bool e = true;
     if (token == Constants::SQRT)
     {
-        output << token.substr(1) << " ";
+        output << translate[token] << " ";
         token = Tokenizer::nextToken(latexf);
         sqrtExpr(token, itemsScope);
     }
