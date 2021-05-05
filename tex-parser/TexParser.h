@@ -35,6 +35,15 @@ private:
         {Constants::ATOP, "above"},
         {Constants::OVERLINE, "bar"},
         {Constants::UNDERLINEW, "under"},
+        {Constants::SUM, "sum"},
+        {Constants::PROD, "prod"},
+        {Constants::BACKSLASH, "\\"},
+        {"\\|", "||"},
+        {"\\{", "{"},
+        {"\\}", "}"},
+        {std::string(1, Constants::POWER), "sup"}};
+
+    std::unordered_map<std::string, std::string> translateLetters = {
         {Constants::ALPHA, "alpha"},
         {Constants::BETA, "beta"},
         {Constants::CHI, "chi"},
@@ -58,12 +67,12 @@ private:
         {Constants::UPSILON, "upsilon"},
         {Constants::XI, "xi"},
         {Constants::ZETA, "zeta"},
-        {Constants::DIGAMMA, "digamma"},//unknown
+        {Constants::DIGAMMA, "digamma"}, //unknown
         {Constants::VAREPSILON, "\\(*e"},
-        {Constants::VARKAPPA, "varkappa"},//unknown
-        {Constants::VARPHI, "varphi"},//unknown
-        {Constants::VARPI, "varpi"}, //unknown
-        {Constants::VARRHO, "varrho"}, //unknown
+        {Constants::VARKAPPA, "varkappa"}, //unknown
+        {Constants::VARPHI, "varphi"},     //unknown
+        {Constants::VARPI, "varpi"},       //unknown
+        {Constants::VARRHO, "varrho"},     //unknown
         {Constants::VARSIGMA, "\\(ts"},
         {Constants::UDELTA, "DELTA"},
         {Constants::UGAMMA, "GAMMA"},
@@ -73,16 +82,10 @@ private:
         {Constants::UPI, "PI"},
         {Constants::UPSI, "PSI"},
         {Constants::USIGMA, "SIGMA"},
-        {Constants::SUM, "sum"},
-        {Constants::PROD, "prod"},
-        {Constants::BACKSLASH, "\\"},
-        {"\\|", "||"},
-        {"\\{", "{"},
-        {"\\}", "}"},
-        {std::string(1, Constants::POWER), "sup"}
-        };
+    };
 
-    std::string syntaxError(std::string error);
+    std::string
+    syntaxError(std::string error);
 
     std::ifstream latexf;
     std::ofstream output;
@@ -103,7 +106,6 @@ private:
     bool penalty(std::string &token);
     bool whatsit(std::string &token);
     bool boundaryItem(std::string &token, std::vector<std::string> itemsScope);
-    void rightBoundaryAtom(std::string &token, std::string rightItem);
 
     bool glues(std::string &token);
 
@@ -122,10 +124,13 @@ private:
     bool accAtom(std::string &token);
     bool opAtom(std::string &token);
     bool ordAtom(std::string &token);
+    bool greekHebrowLetters(std::string token);
 
     bool isEndExpr(std::string &token);
 
     bool isWord(std::string letter);
+
+    void printOut(std::string token);
 
 public:
     TexParser(std::string input, std::string output);

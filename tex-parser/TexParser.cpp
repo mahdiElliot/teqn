@@ -26,6 +26,13 @@ std::string TexParser::syntaxError(std::string error)
     return std::to_string(Tokenizer::getLine()) + ": syntax error in: " + error + '\n';
 }
 
+void TexParser::printOut(std::string token)
+{
+    std::string t = translate[token];
+    t = t == "" ? translateLetters[token] : t;
+    output << (t == "" ? token : t) << " ";
+}
+
 bool TexParser::isEndExpr(std::string &token)
 {
     if (token[0] == Constants::DOT)
@@ -67,13 +74,13 @@ void TexParser::start()
         return;
     }
     openClose.push_back(token);
-    output << translate[token]<< " ";
+    printOut(token);
     token = Tokenizer::nextToken(latexf);
     std::vector<std::string> mainScope;
     body(token, mainScope);
     if (token == ENDEXP)
     {
-        output << translate[token]<<" ";
+        printOut(token);
         start();
     }
     else if (latexf.eof())
@@ -229,6 +236,13 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
         {
             token = Tokenizer::nextToken(latexf);
         }
+        else if (translateLetters[token] != "")
+        {
+            printOut(token);
+            token = Tokenizer::nextToken(latexf);
+        }
+        else
+            std::cout<<syntaxError("undefined");
     }
     else if (binAtom(token, itemsScope))
     {
@@ -238,7 +252,7 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
         output << token << " ";
         token = Tokenizer::nextToken(latexf);
     }
-    else if (closeAtom(token) || openAtom(token))
+    else if (closeAtom(token) || openAtom(token) || token[0] == Constants::DOT)
     {
         output << token << " ";
         token = Tokenizer::nextToken(latexf);
@@ -316,93 +330,39 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> itemsS
     bool e = true;
     if (token == Constants::LEFT)
     {
-        output << translate[token] << " ";
+        printOut(token);
         openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
-        if (token[0] == Constants::OPENBRACKET)
+        if (openAtom(token) || closeAtom(token))
         {
-            output << token << " ";
-            token = Tokenizer::nextToken(latexf);
-            std::vector<std::string> localScope;
-            body(token, localScope);
-            rightBoundaryAtom(token, std::string(1, Constants::CLOSEBRACKET));
-        }
-        else if (token[0] == Constants::OPENPARENTHESIS)
-        {
-            output << token << " ";
-            token = Tokenizer::nextToken(latexf);
-            std::vector<std::string> localScope;
-            body(token, localScope);
-            rightBoundaryAtom(token, std::string(1, Constants::CLOSEPARENTHESIS));
-        }
-        else if (token[0] == Constants::OR)
-        {
-            output << token << " ";
-            token = Tokenizer::nextToken(latexf);
-            std::vector<std::string> localScope;
-            body(token, localScope);
-            rightBoundaryAtom(token, std::string(1, Constants::OR));
-        }
-        else if (token[0] == Constants::DOT)
-        {
-            output << token << " ";
+            printOut(token);
             token = Tokenizer::nextToken(latexf);
             std::vector<std::string> localScope;
             body(token, localScope);
             if (token == Constants::RIGHT)
             {
-                output << token.substr(1) << " ";
+                printOut(token);
                 openClose.pop_back();
                 token = Tokenizer::nextToken(latexf);
-                if (token[0] == Constants::DOT || openAtom(token) || closeAtom(token))
+                if (openAtom(token) || closeAtom(token))
+                    printOut(token);
+                else if (token[0] == Constants::DOT)
                 {
-                    output << token << " ";
                 }
                 else
-                    std::cout << syntaxError(std::string(1, Constants::OR));
+                    std::cout << syntaxError(token);
             }
             else
                 std::cout << syntaxError("right");
         }
-        else if (token == "\\{")
+        else if (token[0] == Constants::DOT)
         {
-            output << translate[token] << " ";
-            token = Tokenizer::nextToken(latexf);
-            std::vector<std::string> localScope;
-            body(token, localScope);
-            rightBoundaryAtom(token, "\\}");
         }
     }
     else
         e = false;
 
     return e;
-}
-
-void TexParser::rightBoundaryAtom(std::string &token, std::string rightItem)
-{
-    if (token == Constants::RIGHT)
-    {
-        if (rightItem == "")
-        {
-            std::cout << syntaxError("right without left");
-            return;
-        }
-        output << translate[token] << " ";
-        openClose.pop_back();
-        token = Tokenizer::nextToken(latexf);
-        if (token == rightItem)
-        {
-            output << token << " ";
-        }
-        else if (token[0] == Constants::DOT)
-        {
-        }
-        else
-            std::cout << syntaxError(rightItem);
-    }
-    else
-        std::cout << syntaxError("right");
 }
 
 bool TexParser::glues(std::string &token)
@@ -465,7 +425,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
     }
     else if (token[0] == Constants::POWER)
     {
-        output << translate[token] << " ";
+        printOut(token);
         token = Tokenizer::nextToken(latexf);
         if (token[0] == Constants::POWER)
         {
@@ -519,23 +479,24 @@ bool TexParser::relAtom(std::string &token)
 
 bool TexParser::openAtom(std::string &token)
 {
-    bool e = false;
-    if (token[0] == Constants::OPENBRACKET || token[0] == Constants::OPENPARENTHESIS ||
-        token[0] == Constants::OR || token == "\\{")
-    {
-        e = true;
-    }
-    return e;
+    return token[0] == Constants::OPENBRACKET || token[0] == Constants::OPENPARENTHESIS ||
+           token[0] == Constants::OR || token == Constants::SINGLEVERT ||
+           token == Constants::DOUBLEVERT || token == "\\|" || token == "\\{" || token[0] == Constants::SLASH ||
+           token[0] == Constants::LESSTHAN || token == Constants::LANGLE ||
+           token == Constants::LFLOOR || token == Constants::LCEIL || token == Constants::BACKSLASH ||
+           token == Constants::SINGLEUPARROW || token == Constants::DOUBLEUPARROW ||
+           token == Constants::SINGLEDOWNARROW || token == Constants::DOUBLEDOWNARROW;
 }
 
 bool TexParser::closeAtom(std::string &token)
 {
-    bool e = false;
-    if (token[0] == Constants::CLOSEBRACKET || token[0] == Constants::CLOSEPARENTHESIS || token == "\\}")
-    {
-        e = true;
-    }
-    return e;
+    return token[0] == Constants::CLOSEBRACKET || token[0] == Constants::CLOSEPARENTHESIS ||
+           token[0] == Constants::OR || token == Constants::SINGLEVERT ||
+           token == Constants::DOUBLEVERT || token == "\\|" || token == "\\}" || token[0] == Constants::SLASH ||
+           token[0] == Constants::GREATERTHAN || token == Constants::RANGLE ||
+           token == Constants::RFLOOR || token == Constants::RCEIL || token == Constants::BACKSLASH ||
+           token == Constants::SINGLEUPARROW || token == Constants::DOUBLEUPARROW ||
+           token == Constants::SINGLEDOWNARROW || token == Constants::DOUBLEDOWNARROW;
 }
 
 bool TexParser::punctAtom(std::string &token)
@@ -553,7 +514,7 @@ bool TexParser::radAtom(std::string &token, std::vector<std::string> itemsScope)
     bool e = true;
     if (token == Constants::SQRT)
     {
-        output << translate[token] << " ";
+        printOut(token);
         token = Tokenizer::nextToken(latexf);
         sqrtExpr(token, itemsScope);
     }

@@ -1,1 +1,1 @@
-.BL \sqrt {x + \sqrt 4 - 7 ^ 3} .EL
+.BL \left [ \sqrt {x + \sqrt 4 - (\alpha - \theta ^ \zeta) ^ 3} \right ] .EL
