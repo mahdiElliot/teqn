@@ -82,6 +82,9 @@ private:
         {Constants::UPI, "PI"},
         {Constants::UPSI, "PSI"},
         {Constants::USIGMA, "SIGMA"},
+        {Constants::UTHETA, "THETA"},
+        {Constants::UUPSILON, "UPSILON"},
+        {Constants::UXI, "XI"}
     };
 
     std::string

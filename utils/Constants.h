@@ -74,6 +74,10 @@ public:
     static const char *UPI;
     static const char *UPSI;
     static const char *USIGMA;
+    static const char *UTHETA;
+    static const char *UUPSILON;
+    static const char *UXI;
+    
 
 
 
