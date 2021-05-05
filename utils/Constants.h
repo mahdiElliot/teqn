@@ -32,6 +32,7 @@ public:
     static const char NOT = '!';
     static const char HASH = '#';
     static const char COMMENT = '%';
+    static const char AT = '@';
     static const char *BACKSLASH;
 
     //greek and hebrew

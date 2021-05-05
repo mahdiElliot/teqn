@@ -19,10 +19,6 @@ private:
         {Constants::SINGLEVERT, "|"},
         {Constants::DOUBLEVERT, "||"},
         {Constants::TIMES, "times"},
-        {Constants::SQRT, "sqrt"},
-        {Constants::LEFT, "left"},
-        {Constants::RIGHT, "right"},
-        {Constants::OVER, "over"},
         {Constants::LANGLE, "left <"},
         {Constants::RANGLE, "right >"},
         {Constants::LFLOOR, "\\(lf"},
@@ -31,11 +27,6 @@ private:
         {Constants::RCEIL, "\\(rc"},
         {Constants::SINGLEUPARROW, "\\(ua"},
         {Constants::SINGLEDOWNARROW, "\\(da"},
-        {Constants::OVER, "over"},
-        {Constants::FRAC, "over"},
-        {Constants::ATOP, "above"},
-        {Constants::OVERLINE, "bar"},
-        {Constants::UNDERLINEW, "under"},
         {Constants::SUM, "sum"},
         {Constants::PROD, "prod"},
         {Constants::BACKSLASH, "\\"},
@@ -85,7 +76,17 @@ private:
         {Constants::USIGMA, "SIGMA"},
         {Constants::UTHETA, "THETA"},
         {Constants::UUPSILON, "UPSILON"},
-        {Constants::UXI, "XI"}
+        {Constants::UXI, "XI"}};
+
+    std::unordered_map<std::string, std::string> translateFuncs = {
+        {Constants::SQRT, "sqrt"},
+        {Constants::LEFT, "left"},
+        {Constants::RIGHT, "right"},
+        {Constants::OVER, "over"},
+        {Constants::FRAC, "over"},
+        {Constants::ATOP, "above"},
+        {Constants::OVERLINE, "bar"},
+        {Constants::UNDERLINEW, "under"},
     };
 
     std::string
@@ -101,10 +102,10 @@ private:
     void stmt(std::string &token, std::vector<std::string> itemsScope);
     void expr(std::string &token, std::vector<std::string> itemsScope);
     void expr1(std::string &token, std::vector<std::string> itemsScope);
-    void expr2(std::string &token, std::vector<std::string> itemsScope);
     void sqrtExpr(std::string &token, std::vector<std::string> itemsScope);
 
     bool unexpectedTokens(std::string &token);
+
     bool rules(std::string &token);
     bool discretionary(std::string &token);
     bool penalty(std::string &token);
@@ -120,10 +121,10 @@ private:
     bool openAtom(std::string &token);
     bool closeAtom(std::string &token);
     bool punctAtom(std::string &token);
-    bool innerAtom(std::string &token);
+    bool innerAtom(std::string &token, std::vector<std::string> scopeItems);
     bool vcentAtom(std::string &token);
     bool overAtom(std::string &token);
-    bool underLineAtom(std::string &token);
+    bool underAtom(std::string &token);
     bool radAtom(std::string &token, std::vector<std::string> scopeItems);
     bool accAtom(std::string &token);
     bool opAtom(std::string &token);

@@ -30,6 +30,7 @@ void TexParser::printOut(std::string token)
 {
     std::string t = translate[token];
     t = t == "" ? translateLetters[token] : t;
+    t = t == "" ? translateFuncs[token] : t;
     output << (t == "" ? token : t) << " ";
 }
 
@@ -106,7 +107,25 @@ void TexParser::body(std::string &token, std::vector<std::string> itemsScope)
 
 bool TexParser::unexpectedTokens(std::string &token)
 {
-    if (token[0] == Constants::CLOSEBRACE)
+    bool e = true;
+    if (token[0] == Constants::BACKS)
+    {
+        e = false;
+        if (token[1] == Constants::SINGLEQUOTE || token[1] == Constants::DOUBLEQUOTE ||
+            token[1] == Constants::AT || token[1] == Constants::POWER || token[1] == Constants::EQUAL ||
+            token[1] == Constants::ADD)
+        {
+            e = true;
+            syntaxError(token);
+            token = Tokenizer::nextToken(latexf);
+        }
+    }
+    else if (token[0] == Constants::HASH)
+    {
+        syntaxError("# not allowed");
+        token = Tokenizer::nextToken(latexf);
+    }
+    else if (token[0] == Constants::CLOSEBRACE)
     {
         std::cout << "} without {\n";
     }
@@ -115,9 +134,9 @@ bool TexParser::unexpectedTokens(std::string &token)
         std::cout << syntaxError("right without left");
     }
     else
-        return false;
+        e = false;
 
-    return true;
+    return e;
 }
 
 void TexParser::stmt(std::string &token, std::vector<std::string> itemsScope)
@@ -165,12 +184,10 @@ void TexParser::stmt(std::string &token, std::vector<std::string> itemsScope)
 
 void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
 {
-    if (token[0] == Constants::HASH)
-    {
-        syntaxError("# not allowed");
-        token = Tokenizer::nextToken(latexf);
-    }
-    else if (token[0] == Constants::BACKS)
+    if (binAtom(token, itemsScope))
+        return;
+
+    if (token[0] == Constants::BACKS)
     {
         if (token[1] == Constants::COMMENT)
         {
@@ -232,13 +249,12 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
             //TODO
             token = Tokenizer::nextToken(latexf);
         }
-        else if (radAtom(token, itemsScope))
+        else if (innerAtom(token, itemsScope))
         {
             token = Tokenizer::nextToken(latexf);
         }
-        else if (translateLetters[token] != "")
+        else if (radAtom(token, itemsScope))
         {
-            printOut(token);
             token = Tokenizer::nextToken(latexf);
         }
         else if (token == Constants::TIMES)
@@ -246,11 +262,17 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
             printOut(token);
             token = Tokenizer::nextToken(latexf);
         }
+        else if (translateLetters[token] != "")
+        {
+            printOut(token);
+            token = Tokenizer::nextToken(latexf);
+        }
         else
-            std::cout<<syntaxError("undefined");
+            std::cout << syntaxError("undefined");
     }
-    else if (binAtom(token, itemsScope))
+    else if (relAtom(token))
     {
+        token = Tokenizer::nextToken(latexf);
     }
     else if (Tokenizer::isDigit(token[0]) || isWord(token))
     {
@@ -262,10 +284,6 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
         output << token << " ";
         token = Tokenizer::nextToken(latexf);
     }
-}
-
-void TexParser::expr2(std::string &token, std::vector<std::string> itemsScope)
-{
 }
 
 bool TexParser::rules(std::string &token)
@@ -469,6 +487,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
     }
     else
         e = false;
+
     return e;
 }
 
@@ -579,6 +598,88 @@ void TexParser::expr1(std::string &token, std::vector<std::string> itemsScope)
         if (!unexpectedTokens(token))
             output << token << " ";
     }
+}
+
+bool TexParser::innerAtom(std::string &token, std::vector<std::string> scopeItems)
+{
+    bool e = true;
+    if (token == Constants::FRAC)
+    {
+        token = Tokenizer::nextToken(latexf);
+        if (token[0] == Constants::OPENBRACE)
+        {
+            openClose.push_back(token);
+            output << token << " ";
+            token = Tokenizer::nextToken(latexf);
+            std::vector<std::string> localScope;
+            body(token, localScope);
+            if (token[0] == Constants::CLOSEBRACE)
+            {
+                output << token << " ";
+                openClose.pop_back();
+
+                token = Tokenizer::nextToken(latexf);
+                if (token[0] == Constants::OPENBRACE)
+                {
+                    printOut(Constants::FRAC);
+                    output << token << " ";
+                    openClose.push_back(token);
+                    token = Tokenizer::nextToken(latexf);
+                    std::vector<std::string> localScope;
+                    body(token, localScope);
+                    if (token[0] == Constants::CLOSEBRACE)
+                    {
+                        openClose.pop_back();
+                        output << token << " ";
+                    }
+                    else
+                        std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
+                }
+                else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+                {
+                    std::string e = Constants::FRAC;
+                    e.append(" missing second argument");
+                    std::cout << syntaxError(e);
+                }
+                else
+                {
+                    printOut(Constants::FRAC);
+                    output << token << " ";
+                }
+            }
+            else
+                std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
+        }
+        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        {
+            std::string e = Constants::FRAC;
+            e.append(" missing argument");
+            std::cout << syntaxError(e);
+        }
+        else
+        {
+            output << token << " ";
+            token = Tokenizer::nextToken(latexf);
+            if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+            {
+                std::string e = Constants::FRAC;
+                e.append(" missing second argument");
+                std::cout << syntaxError(e);
+            }
+            else
+            {
+                printOut(Constants::FRAC);
+                output << token << " ";
+            }
+        }
+    }
+    else if (token == Constants::OVER)
+    {
+    }
+    else
+        e = false;
+
+    return e;
 }
 
 // bool TexParser::isNumber(std::string number)

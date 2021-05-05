@@ -1,1 +1,1 @@
-.BL \left [ \sqrt {x + \sqrt 4 \times (\alpha - \theta ^ \zeta) ^ 3} \right ] .EL
+.BL \frac{x}{y} .EL
