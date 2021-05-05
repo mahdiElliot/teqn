@@ -1,1 +1,1 @@
-.EQ left [ sqrt { x + sqrt 4 - ( alpha - theta sup zeta sup 3 } right ] .EN 
+.EQ left [ sqrt { x + sqrt 4 times ( alpha - theta sup zeta ) sup 3 } right ] .EN 

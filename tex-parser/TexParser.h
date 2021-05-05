@@ -18,6 +18,7 @@ private:
         {ENDEXP, ".EN"},
         {Constants::SINGLEVERT, "|"},
         {Constants::DOUBLEVERT, "||"},
+        {Constants::TIMES, "times"},
         {Constants::SQRT, "sqrt"},
         {Constants::LEFT, "left"},
         {Constants::RIGHT, "right"},

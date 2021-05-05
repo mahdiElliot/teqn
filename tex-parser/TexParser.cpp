@@ -241,6 +241,11 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
             printOut(token);
             token = Tokenizer::nextToken(latexf);
         }
+        else if (token == Constants::TIMES)
+        {
+            printOut(token);
+            token = Tokenizer::nextToken(latexf);
+        }
         else
             std::cout<<syntaxError("undefined");
     }

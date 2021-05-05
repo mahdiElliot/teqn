@@ -1,5 +1,6 @@
 #include "Constants.h"
 
+const char *Constants::TIMES = "\\times";
 const char *Constants::BACKSLASH = "\\backslash";
 const char *Constants::SINGLEVERT = "\\vert";
 const char *Constants::DOUBLEVERT = "\\Vert";

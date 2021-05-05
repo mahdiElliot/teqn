@@ -79,9 +79,8 @@ public:
     static const char *UXI;
     
 
-
-
     //special words
+    static const char *TIMES;
     static const char *SINGLEVERT;
     static const char *DOUBLEVERT;
 
