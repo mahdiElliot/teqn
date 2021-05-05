@@ -713,14 +713,52 @@ bool TexParser::overAtom(std::string &token)
         }
         else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
         {
-            std::string e = Constants::OVER;
+            std::string e = Constants::OVERLINE;
             e.append(" missing argument");
             std::cout << syntaxError(e);
         }
         else
         {
             output << token << " ";
-            printOut(Constants::OVER);
+            printOut(Constants::OVERLINE);
+        }
+    }
+    return e;
+}
+
+bool TexParser::underAtom(std::string &token)
+{
+    bool e = false;
+    if (token == Constants::UNDERLINEW)
+    {
+        e = true;
+        token = Tokenizer::nextToken(latexf);
+        if (token[0] == Constants::OPENBRACE)
+        {
+            output << token << " ";
+            openClose.push_back(token);
+            token = Tokenizer::nextToken(latexf);
+            std::vector<std::string> localScope;
+            body(token, localScope);
+            if (token[0] == Constants::CLOSEBRACE)
+            {
+                openClose.pop_back();
+                output << token << " ";
+                printOut(Constants::UNDERLINEW);
+            }
+            else
+                std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
+        }
+        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        {
+            std::string e = Constants::UNDERLINEW;
+            e.append(" missing argument");
+            std::cout << syntaxError(e);
+        }
+        else
+        {
+            output << token << " ";
+            printOut(Constants::UNDERLINEW);
         }
     }
     return e;
