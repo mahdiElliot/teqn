@@ -249,11 +249,15 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
             //TODO
             token = Tokenizer::nextToken(latexf);
         }
-        else if (innerAtom(token, itemsScope))
+        else if (innerAtom(token))
         {
             token = Tokenizer::nextToken(latexf);
         }
         else if (radAtom(token, itemsScope))
+        {
+            token = Tokenizer::nextToken(latexf);
+        }
+        else if (overAtom(token))
         {
             token = Tokenizer::nextToken(latexf);
         }
@@ -268,7 +272,10 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
             token = Tokenizer::nextToken(latexf);
         }
         else
+        {
             std::cout << syntaxError("undefined");
+            token = Tokenizer::nextToken(latexf);
+        }
     }
     else if (relAtom(token))
     {
@@ -450,12 +457,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
     {
         printOut(token);
         token = Tokenizer::nextToken(latexf);
-        if (token[0] == Constants::POWER)
-        {
-            std::cout << syntaxError(std::string(1, Constants::POWER));
-            token = Tokenizer::nextToken(latexf);
-        }
-        else if (token[0] == Constants::OPENBRACE)
+        if (token[0] == Constants::OPENBRACE)
         {
             output << token << " ";
             openClose.push_back(token);
@@ -471,6 +473,10 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
                 std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
 
             token = Tokenizer::nextToken(latexf);
+        }
+        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        {
+            std::cout << syntaxError("not allowed");
         }
         else if ((isWord(token) || Tokenizer::isDigit(token[0])))
         {
@@ -600,7 +606,7 @@ void TexParser::expr1(std::string &token, std::vector<std::string> itemsScope)
     }
 }
 
-bool TexParser::innerAtom(std::string &token, std::vector<std::string> scopeItems)
+bool TexParser::innerAtom(std::string &token)
 {
     bool e = true;
     if (token == Constants::FRAC)
@@ -679,6 +685,44 @@ bool TexParser::innerAtom(std::string &token, std::vector<std::string> scopeItem
     else
         e = false;
 
+    return e;
+}
+
+bool TexParser::overAtom(std::string &token)
+{
+    bool e = false;
+    if (token == Constants::OVERLINE)
+    {
+        e = true;
+        token = Tokenizer::nextToken(latexf);
+        if (token[0] == Constants::OPENBRACE)
+        {
+            output << token << " ";
+            openClose.push_back(token);
+            token = Tokenizer::nextToken(latexf);
+            std::vector<std::string> localScope;
+            body(token, localScope);
+            if (token[0] == Constants::CLOSEBRACE)
+            {
+                openClose.pop_back();
+                output << token << " ";
+                printOut(Constants::OVERLINE);
+            }
+            else
+                std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
+        }
+        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        {
+            std::string e = Constants::OVER;
+            e.append(" missing argument");
+            std::cout << syntaxError(e);
+        }
+        else
+        {
+            output << token << " ";
+            printOut(Constants::OVER);
+        }
+    }
     return e;
 }
 

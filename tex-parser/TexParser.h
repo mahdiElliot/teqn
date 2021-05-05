@@ -121,7 +121,7 @@ private:
     bool openAtom(std::string &token);
     bool closeAtom(std::string &token);
     bool punctAtom(std::string &token);
-    bool innerAtom(std::string &token, std::vector<std::string> scopeItems);
+    bool innerAtom(std::string &token);
     bool vcentAtom(std::string &token);
     bool overAtom(std::string &token);
     bool underAtom(std::string &token);

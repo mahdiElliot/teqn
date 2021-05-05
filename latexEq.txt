@@ -1,1 +1,1 @@
-.BL \frac{x}{y} .EL
+.BL \left [ \sqrt {x + \sqrt 4 \times (\alpha - \frac {\overline{\Theta}}{6} ^ \overline{\zeta}) ^ 3} \right ] .EL
