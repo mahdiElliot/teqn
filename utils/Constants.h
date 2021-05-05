@@ -130,6 +130,7 @@ public:
     static const char *OVER;
     static const char *ATOP;
     static const char *ABOVE;
+    static const char *CHOOSE;
     static const char *OVERWITHDELIMS;
     static const char *ATOPWITHDELIMS;
     static const char *ABOVEWITHDELIMS;

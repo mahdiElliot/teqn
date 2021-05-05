@@ -87,6 +87,7 @@ private:
         {Constants::ATOP, "above"},
         {Constants::OVERLINE, "bar"},
         {Constants::UNDERLINEW, "under"},
+        {Constants::CHOOSE, "above"}
     };
 
     std::string

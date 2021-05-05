@@ -61,6 +61,7 @@ bool TexParser::isEndExpr(std::string &token)
 
 void TexParser::start()
 {
+    openClose.clear();
     std::string token = Tokenizer::nextToken2(latexf);
     while (!latexf.eof() && token != STARTEXP && token != ENDEXP)
     {
@@ -681,6 +682,14 @@ bool TexParser::innerAtom(std::string &token)
     }
     else if (token == Constants::OVER)
     {
+    }
+    else if (token == Constants::ATOP)
+    {
+
+    }
+    else if (token == Constants::CHOOSE)
+    {
+
     }
     else
         e = false;
