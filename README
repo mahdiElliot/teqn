@@ -1,4 +1,4 @@
 TEX equations to neateqn converter preprocessor
 ===========================
 create a "latexEq.txt" file, write troff that contains equations starting with ".BL" and ending with ".EL".
-compile and run "project.cpp", the output file will be in "output.txt".
+compile and run "project.cpp", the output file will be in "out.txt".
