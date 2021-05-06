@@ -105,7 +105,6 @@ private:
     void start();
     void body(std::string &token, std::vector<std::string> &itemsScope);
     void stmt(std::string &token, std::vector<std::string> &itemsScope);
-    void stmt2(std::string &token, std::vector<std::string> &itemsScope);
     void expr(std::string &token, std::vector<std::string> &itemsScope);
     void expr1(std::string &token, std::vector<std::string> &itemsScope);
     void sqrtExpr(std::string &token, std::vector<std::string> &itemsScope);
