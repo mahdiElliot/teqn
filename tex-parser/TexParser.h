@@ -13,8 +13,6 @@ private:
     const std::string STARTEXP = ".BL";
     const std::string ENDEXP = ".EL";
 
-    std::string pile = "pile { ";
-
     std::unordered_map<std::string, std::string> translate = {
         {STARTEXP, ".EQ"},
         {ENDEXP, ".EN"},
@@ -100,14 +98,19 @@ private:
     std::ifstream latexf;
     std::ofstream output;
 
+    bool error = false;
+    bool outputMode = true;
+    int scopeId = 1;
+
     std::vector<std::string> openClose;
+    std::unordered_map<int, std::string> genFracs;
 
     void start();
-    void body(std::string &token, std::vector<std::string> &itemsScope);
-    void stmt(std::string &token, std::vector<std::string> &itemsScope);
-    void expr(std::string &token, std::vector<std::string> &itemsScope);
-    void expr1(std::string &token, std::vector<std::string> &itemsScope);
-    void sqrtExpr(std::string &token, std::vector<std::string> &itemsScope);
+    void body(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    void stmt(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    void expr(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    void expr1(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    void sqrtExpr(std::string &token, std::vector<std::string> &itemsScope, int scope);
 
     bool unexpectedTokens(std::string &token);
 
@@ -115,26 +118,27 @@ private:
     bool discretionary(std::string &token);
     bool penalty(std::string &token);
     bool whatsit(std::string &token);
-    bool boundaryItem(std::string &token, std::vector<std::string> &itemsScope);
+    bool boundaryItem(std::string &token, std::vector<std::string> &itemsScope, int scope);
 
     bool glues(std::string &token);
 
     bool fourWayChoice(std::string &token);
 
-    bool binAtom(std::string &token, std::vector<std::string> &itemsScope);
+    bool binAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool relAtom(std::string &token);
     bool openAtom(std::string &token);
     bool closeAtom(std::string &token);
     bool punctAtom(std::string &token);
-    bool innerAtom(std::string &token, std::vector<std::string> &itemsScope);
+    bool innerAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool vcentAtom(std::string &token);
-    bool overAtom(std::string &token);
-    bool underAtom(std::string &token);
-    bool radAtom(std::string &token, std::vector<std::string> &itemsScope);
+    bool overAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    bool underAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    bool radAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool accAtom(std::string &token);
     bool opAtom(std::string &token);
     bool ordAtom(std::string &token);
-    bool generalizedFracs(std::string &token, std::vector<std::string> &itemsScope);
+    bool generalizedFracs(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    void handleFractions(int scope);
     bool greekHebrowLetters(std::string token);
 
     bool isEndExpr(std::string &token);

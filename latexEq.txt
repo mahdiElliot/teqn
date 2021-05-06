@@ -1,2 +1,3 @@
-.BL \left [ \sqrt {x + \sqrt 4 \times (\alpha - \frac {\overline{\Theta}}{6} ^ {\overline{\zeta}}) ^ 3} \right ] .EL
+.BL x + 1 \times \alpha \over 7 - {{c} \choose {b}} .EL
 .BL x + 1 \times \alpha \over 7 - {{c} \over {b}} .EL
+.BL x + 1 + \left[sd \over \zeta \right] \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}} .EL
