@@ -1,1 +1,2 @@
-.BL \left [ \sqrt {x + \sqrt 4 \times (\alpha - \frac {\overline{\Theta}}{6} ^ \overline{\zeta}) ^ 3} \right ] .EL
+.BL \left [ \sqrt {x + \sqrt 4 \times (\alpha - \frac {\overline{\Theta}}{6} ^ {\overline{\zeta}}) ^ 3} \right ] .EL
+.BL x + 1 \times \alpha \over 7 - {{c} \over {b}} .EL

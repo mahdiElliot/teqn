@@ -1,1 +1,2 @@
-.EQ left [ sqrt { x + sqrt 4 times ( alpha - { { THETA } bar } over { 6 } sup { zeta } bar ) sup 3 } right ] .EN 
+.EQ left [ sqrt { x + sqrt 4 times ( alpha - { { THETA } bar } over { 6 } sup { { zeta } bar } ) sup 3 } right ] .EN 
+ .EQ x + 1 times alpha over 7 - { { c } over { b } } .EN 

@@ -30,6 +30,7 @@ void TexParser::printOut(std::string token)
 {
     std::string t = translate[token];
     t = t == "" ? translateLetters[token] : t;
+    t = t == "" ? translateGenFracs[token] : t;
     t = t == "" ? translateFuncs[token] : t;
     output << (t == "" ? token : t) << " ";
 }
@@ -89,7 +90,7 @@ void TexParser::start()
         std::cout << "error, end of expression not specified\n";
 }
 
-void TexParser::body(std::string &token, std::vector<std::string> itemsScope)
+void TexParser::body(std::string &token, std::vector<std::string> &itemsScope)
 {
     if (isEndExpr(token))
         return;
@@ -140,7 +141,7 @@ bool TexParser::unexpectedTokens(std::string &token)
     return e;
 }
 
-void TexParser::stmt(std::string &token, std::vector<std::string> itemsScope)
+void TexParser::stmt(std::string &token, std::vector<std::string> &itemsScope)
 {
     if (token[0] == '\r' || token[0] == '\n')
     {
@@ -183,7 +184,7 @@ void TexParser::stmt(std::string &token, std::vector<std::string> itemsScope)
     }
 }
 
-void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
+void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope)
 {
     if (binAtom(token, itemsScope))
         return;
@@ -250,9 +251,13 @@ void TexParser::expr(std::string &token, std::vector<std::string> itemsScope)
             //TODO
             token = Tokenizer::nextToken(latexf);
         }
-        else if (innerAtom(token))
+        else if (innerAtom(token, itemsScope))
         {
             token = Tokenizer::nextToken(latexf);
+        }
+        else if (generalizedFracs(token, itemsScope))
+        {
+            
         }
         else if (radAtom(token, itemsScope))
         {
@@ -356,7 +361,7 @@ bool TexParser::whatsit(std::string &token)
     return e;
 }
 
-bool TexParser::boundaryItem(std::string &token, std::vector<std::string> itemsScope)
+bool TexParser::boundaryItem(std::string &token, std::vector<std::string> &itemsScope)
 {
     bool e = true;
     if (token == Constants::LEFT)
@@ -446,7 +451,7 @@ bool TexParser::fourWayChoice(std::string &token)
     return e;
 }
 
-bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
+bool TexParser::binAtom(std::string &token, std::vector<std::string> &itemsScope)
 {
     bool e = true;
     if (token[0] == Constants::ADD || token[0] == Constants::SUB || token[0] == Constants::MULT || token[0] == Constants::SLASH)
@@ -489,7 +494,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> scopeItems)
                 token = Tokenizer::nextToken(latexf);
             }
         }
-        else if (boundaryItem(token, scopeItems))
+        else if (boundaryItem(token, itemsScope))
             token = Tokenizer::nextToken(latexf);
     }
     else
@@ -540,7 +545,7 @@ bool TexParser::punctAtom(std::string &token)
     return e;
 }
 
-bool TexParser::radAtom(std::string &token, std::vector<std::string> itemsScope)
+bool TexParser::radAtom(std::string &token, std::vector<std::string> &itemsScope)
 {
     bool e = true;
     if (token == Constants::SQRT)
@@ -558,7 +563,7 @@ bool TexParser::radAtom(std::string &token, std::vector<std::string> itemsScope)
     return e;
 }
 
-void TexParser::sqrtExpr(std::string &token, std::vector<std::string> itemsScope)
+void TexParser::sqrtExpr(std::string &token, std::vector<std::string> &itemsScope)
 {
     if (token[0] == Constants::OPENBRACKET)
     {
@@ -583,7 +588,7 @@ void TexParser::sqrtExpr(std::string &token, std::vector<std::string> itemsScope
         expr1(token, itemsScope);
 }
 
-void TexParser::expr1(std::string &token, std::vector<std::string> itemsScope)
+void TexParser::expr1(std::string &token, std::vector<std::string> &itemsScope)
 {
     if (token[0] == Constants::OPENBRACE)
     {
@@ -607,7 +612,7 @@ void TexParser::expr1(std::string &token, std::vector<std::string> itemsScope)
     }
 }
 
-bool TexParser::innerAtom(std::string &token)
+bool TexParser::innerAtom(std::string &token, std::vector<std::string> &itemsScope)
 {
     bool e = true;
     if (token == Constants::FRAC)
@@ -642,7 +647,7 @@ bool TexParser::innerAtom(std::string &token)
                     else
                         std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
                 }
-                else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+                else if (translateFuncs[token] != "" || translateGenFracs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token) || isEndExpr(token))
                 {
                     std::string e = Constants::FRAC;
                     e.append(" missing second argument");
@@ -657,7 +662,7 @@ bool TexParser::innerAtom(std::string &token)
             else
                 std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
         }
-        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        else if (translateFuncs[token] != "" || translateGenFracs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token) || isEndExpr(token))
         {
             std::string e = Constants::FRAC;
             e.append(" missing argument");
@@ -667,7 +672,7 @@ bool TexParser::innerAtom(std::string &token)
         {
             output << token << " ";
             token = Tokenizer::nextToken(latexf);
-            if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+            if (translateFuncs[token] != "" || translateGenFracs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token) || isEndExpr(token))
             {
                 std::string e = Constants::FRAC;
                 e.append(" missing second argument");
@@ -680,19 +685,50 @@ bool TexParser::innerAtom(std::string &token)
             }
         }
     }
-    else if (token == Constants::OVER)
+    else
+        e = false;
+
+    return e;
+}
+
+bool TexParser::generalizedFracs(std::string &token, std::vector<std::string> &itemsScope)
+{
+    bool e = true;
+    if (token == Constants::OVER)
     {
+        if (itemsScope.size() && translateGenFracs[itemsScope.back()] != "")
+        {
+            std::cout << syntaxError("missing {");
+        }
+        else
+        {
+            printOut(token);
+            itemsScope.push_back(token);
+        }
     }
     else if (token == Constants::ATOP)
     {
-
+        if (itemsScope.size() && translateGenFracs[itemsScope.back()] != "")
+        {
+            std::cout << syntaxError("missing {");
+        }
+        else
+        {
+            itemsScope.push_back(token);
+        }
     }
     else if (token == Constants::CHOOSE)
     {
-
+        if (translateGenFracs[itemsScope.back()] != "")
+        {
+            std::cout << syntaxError("missing {");
+        }
+        else
+        {
+            itemsScope.push_back(token);
+        }
     }
-    else
-        e = false;
+    else e = false;
 
     return e;
 }
@@ -720,7 +756,8 @@ bool TexParser::overAtom(std::string &token)
             else
                 std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
         }
-        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        else if (translateFuncs[token] != "" || translateGenFracs[token] != "" ||
+                 token[0] == Constants::POWER || unexpectedTokens(token) || isEndExpr(token))
         {
             std::string e = Constants::OVERLINE;
             e.append(" missing argument");
@@ -758,7 +795,8 @@ bool TexParser::underAtom(std::string &token)
             else
                 std::cout << syntaxError(std::string(1, Constants::CLOSEBRACE));
         }
-        else if (translateFuncs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token))
+        else if (translateFuncs[token] != "" || translateGenFracs[token] != "" ||
+                 token[0] == Constants::POWER || unexpectedTokens(token) || isEndExpr(token))
         {
             std::string e = Constants::UNDERLINEW;
             e.append(" missing argument");
