@@ -589,6 +589,7 @@ bool TexParser::relAtom(std::string &token)
     bool e = false;
     if (token[0] == Constants::EQUAL || token[0] == Constants::GREATERTHAN || token[0] == Constants::LESSTHAN)
     {
+        printOut(token);
         e = true;
     }
     return e;
