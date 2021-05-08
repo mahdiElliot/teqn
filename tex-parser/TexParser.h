@@ -29,6 +29,8 @@ private:
         {Constants::SINGLEDOWNARROW, "\\(da"},
         {Constants::SUM, "sum"},
         {Constants::PROD, "prod"},
+        {Constants::COPROD, "coprod"},
+        {Constants::INTEGRAL, "int"},
         {Constants::BACKSLASH, "\\"},
         {"\\|", "||"},
         {"\\{", "{"},
@@ -85,6 +87,7 @@ private:
         {Constants::FRAC, "over"},
         {Constants::OVERLINE, "bar"},
         {Constants::UNDERLINEW, "under"},
+        {std::string(1, Constants::UNDERLINE), "sub"}
     };
 
     std::unordered_map<std::string, std::string> translateGenFracs = {
@@ -92,7 +95,7 @@ private:
         {Constants::ATOP, "above"},
         {Constants::CHOOSE, "above"}};
 
-    std::string syntaxError(std::string error);
+    void syntaxError(std::string error);
 
 
     std::ifstream latexf;

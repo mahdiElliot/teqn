@@ -148,6 +148,8 @@ public:
 
     static const char *SUM;
     static const char *PROD;
+    static const char *COPROD;
+    static const char *INTEGRAL;
     
 
 };

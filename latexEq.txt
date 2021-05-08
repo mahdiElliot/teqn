@@ -1,3 +1,4 @@
 .BL x + 1 \times \alpha \over 7 - {{c} \choose {b}} .EL
 .BL x + 1 \times \alpha \over 7 - {{c} \over {b}} .EL
 .BL x + 1 + \left[sd \over \zeta \right] \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}} .EL
+.BL (x + 1)_{\left[sd \over \zeta \right] \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}}} .EL

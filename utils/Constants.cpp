@@ -98,3 +98,5 @@ const char *Constants::UUPSILON = "\\Upsilon";
 const char *Constants::UXI = "\\Xi";
 const char *Constants::SUM = "\\sum";
 const char *Constants::PROD = "\\prod";
+const char *Constants::COPROD = "\\coprod";
+const char *Constants::INTEGRAL = "\\int";
