@@ -1,5 +1,5 @@
 .EQ { x + 1 times alpha } over { 7 - { left ( pile { {{ c } } above { { b } } } right )} } .EN 
  .EQ { x + 1 times alpha } over { 7 - { { { c } } over { { b } } } } .EN 
  .EQ x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} .EN 
- .EQ ( x + 1 ) sub { left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} } .EN 
+ .EQ sqrt { ( x + 1 ) sub { left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} } } .EN 
  .EQ { x hat } tilde .EN 
