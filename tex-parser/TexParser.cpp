@@ -354,6 +354,10 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
             expr1(token, itemsScope, scope);
         token = Tokenizer::nextToken(latexf);
     }
+    else if (punctAtom(token))
+    {
+        token = Tokenizer::nextToken(latexf);
+    }
     else if (Tokenizer::isDigit(token[0]) || isWord(token))
     {
         printOut(token);
@@ -614,6 +618,7 @@ bool TexParser::punctAtom(std::string &token)
     if (token[0] == Constants::COMMA)
     {
         e = true;
+        printOut(token);
     }
     return e;
 }
