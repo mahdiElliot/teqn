@@ -87,6 +87,8 @@ private:
         {Constants::FRAC, "over"},
         {Constants::OVERLINE, "bar"},
         {Constants::UNDERLINEW, "under"},
+        {Constants::HAT, "hat"},
+        {Constants::TILDE, "tilde"},
         {std::string(1, Constants::UNDERLINE), "sub"}
     };
 
@@ -137,7 +139,7 @@ private:
     bool overAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool underAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool radAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
-    bool accAtom(std::string &token);
+    bool accAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool opAtom(std::string &token);
     bool ordAtom(std::string &token);
     bool generalizedFracs(std::string &token, std::vector<std::string> &itemsScope, int scope);

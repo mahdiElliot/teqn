@@ -100,3 +100,5 @@ const char *Constants::SUM = "\\sum";
 const char *Constants::PROD = "\\prod";
 const char *Constants::COPROD = "\\coprod";
 const char *Constants::INTEGRAL = "\\int";
+const char *Constants::HAT = "\\hat";
+const char *Constants::TILDE = "\\tilde";

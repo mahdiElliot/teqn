@@ -150,6 +150,9 @@ public:
     static const char *PROD;
     static const char *COPROD;
     static const char *INTEGRAL;
+
+    static const char *HAT;
+    static const char *TILDE;
     
 
 };
