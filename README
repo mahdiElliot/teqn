@@ -2,3 +2,34 @@ TEX equations to neateqn converter preprocessor
 ===========================
 create a "latexEq.txt" file, write troff that contains equations starting with ".BL" and ending with ".EL".
 compile and run "project.cpp", the output file will be in "out.txt".
+
+handled symbols and expresions:
+greek and hebrew letters
+delimeters
+\left
+\right
+\Bigl
+\Bigr
+
+\exp
+
+\sqrt {}
+\frac{}{}
+\overline {}
+\underline {}
+\overline {}
+\over
+\atop
+\choose
+
+pow symbol : ^ => sup
+underline symbol: _ => sub
+
+\sum
+\prod
+\coprod
+\int
+
+\hat
+\tilde
+
