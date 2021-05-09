@@ -139,7 +139,8 @@ void TexParser::body(std::string &token, std::vector<std::string> &itemsScope, i
 
     if ((token[0] == Constants::CLOSEBRACE && openClose.back() == std::string(1, Constants::OPENBRACE)) ||
         (token[0] == Constants::CLOSEBRACKET && openClose.back() == std::string(1, Constants::OPENBRACKET)) ||
-        (token == Constants::RIGHT && openClose.back() == Constants::LEFT))
+        (token == Constants::RIGHT && openClose.back() == Constants::LEFT) ||
+        (token == Constants::BIGR && openClose.back() == Constants::BIGL))
         return;
 
     stmt(token, itemsScope, scope);
@@ -176,6 +177,10 @@ bool TexParser::unexpectedTokens(std::string &token)
     else if (token == Constants::RIGHT)
     {
         syntaxError("right without left");
+    }
+    else if (token == Constants::BIGR)
+    {
+        syntaxError("big right without left");
     }
     else
         e = false;
@@ -340,7 +345,7 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
         }
         else
         {
-            syntaxError("undefined");
+            syntaxError(token + " undefined");
             token = Tokenizer::nextToken(latexf);
         }
     }
@@ -468,6 +473,42 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> &items
             }
             else
                 syntaxError("right");
+        }
+        else if (token[0] == Constants::DOT)
+        {
+        }
+        else
+            syntaxError("unexpected after left: " + token);
+    }
+    else if (token == Constants::BIGL)
+    {
+        printOut(token);
+        openClose.push_back(token);
+        token = Tokenizer::nextToken(latexf);
+        if (openAtom(token) || closeAtom(token))
+        {
+            printOut(token);
+            token = Tokenizer::nextToken(latexf);
+            std::vector<std::string> localScope;
+            scopeId++;
+            body(token, localScope, scopeId);
+            if (token == Constants::BIGR)
+            {
+                printOut(token);
+                openClose.pop_back();
+                token = Tokenizer::nextToken(latexf);
+                if (openAtom(token) || closeAtom(token))
+                {
+                    printOut(token);
+                }
+                else if (token[0] == Constants::DOT)
+                {
+                }
+                else
+                    syntaxError(token);
+            }
+            else
+                syntaxError("big right");
         }
         else if (token[0] == Constants::DOT)
         {

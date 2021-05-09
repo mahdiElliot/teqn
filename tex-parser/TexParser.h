@@ -78,19 +78,21 @@ private:
         {Constants::USIGMA, "SIGMA"},
         {Constants::UTHETA, "THETA"},
         {Constants::UUPSILON, "UPSILON"},
+        {Constants::EXP, "exp"},
         {Constants::UXI, "XI"}};
 
     std::unordered_map<std::string, std::string> translateFuncs = {
         {Constants::SQRT, "sqrt"},
         {Constants::LEFT, "left"},
         {Constants::RIGHT, "right"},
+        {Constants::BIGL, "left"},
+        {Constants::BIGR, "right"},
         {Constants::FRAC, "over"},
         {Constants::OVERLINE, "bar"},
         {Constants::UNDERLINEW, "under"},
         {Constants::HAT, "hat"},
         {Constants::TILDE, "tilde"},
-        {std::string(1, Constants::UNDERLINE), "sub"}
-    };
+        {std::string(1, Constants::UNDERLINE), "sub"}};
 
     std::unordered_map<std::string, std::string> translateGenFracs = {
         {Constants::OVER, "over"},
@@ -98,7 +100,6 @@ private:
         {Constants::CHOOSE, "above"}};
 
     void syntaxError(std::string error);
-
 
     std::ifstream latexf;
     std::ofstream output;

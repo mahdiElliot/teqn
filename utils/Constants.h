@@ -97,6 +97,8 @@ public:
 
     static const char *LEFT;
     static const char *RIGHT;
+    static const char *BIGL;
+    static const char *BIGR;
 
     static const char *GLUE;
     static const char *SMALLSKIP;
@@ -121,6 +123,7 @@ public:
 
     static const char *OVERLINE;
     static const char *UNDERLINEW;
+    static const char *EXP;
 
     static const char *SQRT;
     static const char *RADICAL;
