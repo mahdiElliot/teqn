@@ -620,7 +620,7 @@ bool TexParser::closeAtom(std::string &token)
 bool TexParser::punctAtom(std::string &token)
 {
     bool e = false;
-    if (token[0] == Constants::COMMA)
+    if (token[0] == Constants::COMMA || token[0] == Constants::SINGLEQUOTE || token[0] == Constants::DOUBLEQUOTE)
     {
         e = true;
         printOut(token);
