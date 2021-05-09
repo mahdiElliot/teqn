@@ -993,7 +993,8 @@ bool TexParser::accAtom(std::string &token, std::vector<std::string> &itemsScope
 {
     bool e = false;
     std::string t = token;
-    if (token == Constants::HAT || token == Constants::TILDE)
+    if (token == Constants::HAT || token == Constants::TILDE || token == Constants::ODOT ||
+     token == Constants::VEC || token == Constants::BAR)
     {
         e = true;
         token = Tokenizer::nextToken(latexf);

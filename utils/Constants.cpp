@@ -105,3 +105,6 @@ const char *Constants::COPROD = "\\coprod";
 const char *Constants::INTEGRAL = "\\int";
 const char *Constants::HAT = "\\hat";
 const char *Constants::TILDE = "\\tilde";
+const char *Constants::ODOT = "\\dot";
+const char *Constants::VEC = "\\vec";
+const char *Constants::BAR = "\\bar";

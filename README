@@ -30,6 +30,9 @@ underline symbol: _ => sub
 \coprod
 \int
 
-\hat
-\tilde
+\hat{}
+\tilde{}
+\bar{}
+\vec{}
+\odot{}
 

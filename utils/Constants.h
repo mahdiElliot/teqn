@@ -156,6 +156,9 @@ public:
 
     static const char *HAT;
     static const char *TILDE;
+    static const char *ODOT;
+    static const char *VEC;
+    static const char *BAR;
     
 
 };

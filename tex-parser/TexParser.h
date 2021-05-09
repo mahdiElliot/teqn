@@ -89,9 +89,12 @@ private:
         {Constants::BIGR, "right"},
         {Constants::FRAC, "over"},
         {Constants::OVERLINE, "bar"},
+        {Constants::BAR, "bar"},
         {Constants::UNDERLINEW, "under"},
         {Constants::HAT, "hat"},
         {Constants::TILDE, "tilde"},
+        {Constants::ODOT, "dot"},
+        {Constants::VEC, "vec"},
         {std::string(1, Constants::UNDERLINE), "sub"}};
 
     std::unordered_map<std::string, std::string> translateGenFracs = {
