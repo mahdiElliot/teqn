@@ -1,6 +1,2 @@
-.EQ { x + 1 times alpha } over { 7 - { left ( pile { {{ c } } above { { b } } } right )} } .EN 
- .EQ { x + 1 times alpha } over { 7 - { { { c } } over { { b } } } } .EN 
- .EQ x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} .EN 
- .EQ sqrt { ( x + 1 ) sub { left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} } } .EN 
- .EQ { x hat } tilde .EN 
- .EQ S ( omega ) = 1 . 4 6 6 H sub s sup 2 { omega sub 0 sup 5 } over { omega sup 6 } exp left [ - 3 sup { { omega } over { omega sub 0 } } right ] sup 2 .EN 
+dsfsdsdf
+sdihfdoifwdhfi

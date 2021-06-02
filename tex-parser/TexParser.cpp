@@ -35,6 +35,7 @@ void TexParser::printOut(std::string token)
     t = t == "" ? translateLetters[token] : t;
     t = t == "" ? translateGenFracs[token] : t;
     t = t == "" ? translateFuncs[token] : t;
+    t = t == "" ? translateStandardFunctions[token] : t;
     output << (t == "" ? token : t) << " ";
 }
 
@@ -67,7 +68,7 @@ void TexParser::start()
 {
     openClose.clear();
     std::string token = Tokenizer::nextToken2(latexf);
-    while (!latexf.eof() && token != STARTEXP && token != ENDEXP)
+    while (token != "" && token != STARTEXP && token != ENDEXP)
     {
         output << token << " ";
         token = Tokenizer::nextToken2(latexf);
@@ -338,7 +339,7 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
         {
             token = Tokenizer::nextToken(latexf);
         }
-        else if (translateLetters[token] != "")
+        else if (translateLetters[token] != "" || translateStandardFunctions[token] != "")
         {
             printOut(token);
             token = Tokenizer::nextToken(latexf);
@@ -994,7 +995,7 @@ bool TexParser::accAtom(std::string &token, std::vector<std::string> &itemsScope
     bool e = false;
     std::string t = token;
     if (token == Constants::HAT || token == Constants::TILDE || token == Constants::ODOT ||
-     token == Constants::VEC || token == Constants::BAR)
+        token == Constants::VEC || token == Constants::BAR)
     {
         e = true;
         token = Tokenizer::nextToken(latexf);

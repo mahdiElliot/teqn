@@ -148,6 +148,8 @@ public:
     static const char *DOUBLEUPARROW;
     static const char *SINGLEDOWNARROW;
     static const char *DOUBLEDOWNARROW;
+    static const char *LEFTARROW;
+    static const char *RIGHTARROW;
 
     static const char *SUM;
     static const char *PROD;
@@ -159,7 +161,40 @@ public:
     static const char *ODOT;
     static const char *VEC;
     static const char *BAR;
-    
+
+    static const char *BULLET;
+    static const char *BOX;
+    static const char *CIRC;
+    static const char *DAG;
+    static const char *DAGGER;
+    static const char *DDAG;
+    static const char *DDAGGER;
+    static const char *AST;
+    static const char *S;
+    static const char *SETMINUS;
+    static const char *SURD;
+    static const char *EQUIV;
+    static const char *SIMEQ;
+    static const char *SIM;
+    static const char *LEQ;
+    static const char *GEQ;
+    static const char *NEQ;
+    static const char *DIV;
+    static const char *PM;
+    static const char *CUP;
+    static const char *CAP;
+    static const char *SUBSET;
+    static const char *SUPSET;
+    static const char *SUBSETEQ;
+    static const char *SUPSETEQ;
+    static const char *INFTY;
+    static const char *PARTIAL;
+    static const char *NABLA;
+    static const char *PROPTO;
+    static const char *VARNOTHING;
+    static const char *EMPTY;
+    static const char *IN;
+    static const char *BIGCIRC;
 
 };
 #include "Constants.cpp"
