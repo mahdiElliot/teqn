@@ -1,2 +1,9 @@
-dsfsdsdf
-sdihfdoifwdhfi
+.EQ 
+delim $ $ 
+.EN 
+
+.EQ
+delim $$
+.EN
+
+$ a + \alpha ^ 2 $

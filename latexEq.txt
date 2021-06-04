@@ -1,2 +1,9 @@
-sdhgdsg
-iehgiregrf
+.BL
+\delim $$
+.EL
+
+.EQ
+delim $$
+.EN
+
+$ a + \alpha ^ 2 $

@@ -5,7 +5,9 @@ compile and run "project.cpp", the output file will be in "out.txt".
 
 handled symbols and expresions:
 greek and hebrew letters
+
 delimeters
+
 \left
 \right
 \Bigl
@@ -36,3 +38,13 @@ underline symbol: _ => sub
 \vec{}
 \odot{}
 
+also, if you want to have tex equations inline, you can use \delim like below which is similar to neat eqn delim definition:
+.BL
+\delim $$
+.EL
+$ a + \alpha ^ \beta $
+.BL
+\delim %%
+.EL
+
+% a + \alpha ^ \beta %

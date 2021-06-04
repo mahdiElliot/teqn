@@ -24,8 +24,6 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
         short a = (short)c;
         while ((c == ' ') && !myfile.eof())
         {
-            if (c == '\n')
-                line++;
             myfile.get(c);
         }
 
@@ -63,6 +61,11 @@ std::string Tokenizer::nextToken(std::ifstream &myfile)
                     myfile.unget();
                 }
             }
+            else if (c == '\n' || c == '\r')
+            {
+                line++;
+                token = c;
+            }
             else
                 token = c;
         }
@@ -79,12 +82,9 @@ std::string Tokenizer::nextToken2(std::ifstream &myfile)
     {
         myfile.get(c);
         short a = (short)c;
-        while ((c == ' ') && !myfile.eof())
-        {
-            if (c == '\n')
-                line++;
-            myfile.get(c);
-        }
+
+        if (c == '\n' || c == '\r')
+            line++;
 
         if (!myfile.eof())
         {
@@ -139,4 +139,3 @@ std::string Tokenizer::nextToken2(std::ifstream &myfile)
     }
     return token;
 }
-

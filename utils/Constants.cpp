@@ -143,4 +143,5 @@ const char *Constants::VARNOTHING = "\\varnothing";
 const char *Constants::EMPTY = "\\O";
 const char *Constants::IN = "\\in";
 const char *Constants::BIGCIRC = "\\bigcirc";
+const char *Constants::DELIM = "\\delim";
 

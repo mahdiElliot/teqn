@@ -33,6 +33,7 @@ public:
     static const char HASH = '#';
     static const char COMMENT = '%';
     static const char AT = '@';
+    static const char DOLLAR = '$';
     static const char *BACKSLASH;
 
     //greek and hebrew
@@ -195,6 +196,8 @@ public:
     static const char *EMPTY;
     static const char *IN;
     static const char *BIGCIRC;
+
+    static const char *DELIM;
 
 };
 #include "Constants.cpp"

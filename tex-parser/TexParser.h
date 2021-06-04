@@ -108,13 +108,13 @@ private:
         {Constants::SUBSET, "\\(ib"},
         {Constants::SUPSETEQ, "\\(ip"},
         {Constants::INFTY, "\\(if"},
-        {Constants::PARTIAL, "\\(pd"};
+        {Constants::PARTIAL, "\\(pd"},
         {Constants::NABLA, "\\(gr"},
         {Constants::PROPTO, "\\(pt"},
         {Constants::VARNOTHING, "\\(es"},
         {Constants::EMPTY, "\\(es"},
-        {Constants::IN, "\\(mo"}
-        };
+        {Constants::IN, "\\(mo"},
+        {Constants::BIGCIRC, "\\(ci"}};
 
     std::unordered_map<std::string, std::string> translateFuncs = {
         {Constants::SQRT, "sqrt"},
@@ -169,14 +169,19 @@ private:
         {"\\sinh", "sinh"},
         {"\\sup", "sup"},
         {"\\tan", "tan"},
-        {"\\tanh", "tanh"}
-        };
+        {"\\tanh", "tanh"}};
 
     void syntaxError(std::string error);
 
     std::ifstream latexf;
     std::ofstream output;
 
+    char delimStart = ' ';
+    char delimStart2 = ' ';
+    char delimEnd = ' ';
+    char delimEnd2 = ' ';
+    bool justDelim = true;
+    bool inLineEq = false;
     bool error = false;
     bool outputMode = true;
     int scopeId = 1;
@@ -185,6 +190,7 @@ private:
     std::unordered_map<int, std::string> genFracs;
 
     void start();
+    bool delimCheck(std::string &token);
     void body(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void stmt(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void expr(std::string &token, std::vector<std::string> &itemsScope, int scope);
@@ -225,6 +231,7 @@ private:
     bool isWord(std::string letter);
 
     void printOut(std::string token);
+    void skipLines(std::string &token);
 
 public:
     TexParser(std::string input, std::string output);

@@ -27,6 +27,16 @@ void TexParser::syntaxError(std::string e)
     std::cout << std::to_string(Tokenizer::getLine()) << ": syntax error in: " << e << '\n';
 }
 
+void TexParser::skipLines(std::string &token)
+{
+    while (token == "\n" || token == "\r")
+    {
+        if (outputMode)
+            output << token;
+        token = Tokenizer::nextToken(latexf);
+    }
+}
+
 void TexParser::printOut(std::string token)
 {
     if (!outputMode)
@@ -41,6 +51,8 @@ void TexParser::printOut(std::string token)
 
 bool TexParser::isEndExpr(std::string &token)
 {
+    if (delimEnd != ' ' && openClose[0][0] == delimStart && token[0] == delimEnd)
+        return true;
     if (token[0] == Constants::DOT)
     {
         std::string t = ".";
@@ -66,11 +78,47 @@ bool TexParser::isEndExpr(std::string &token)
 
 void TexParser::start()
 {
+    justDelim = true;
+    inLineEq = false;
     openClose.clear();
     std::string token = Tokenizer::nextToken2(latexf);
-    while (token != "" && token != STARTEXP && token != ENDEXP)
+    while (token != "" && token != STARTEXP && token != ENDEXP && (delimStart == ' ' || token[0] != delimStart))
     {
-        output << token << " ";
+        output << token;
+        if (token == ".EQ")
+        {
+            token = Tokenizer::nextToken2(latexf);
+            while (token != "delim" && token != ".EN")
+            {
+                output << token;
+                token = Tokenizer::nextToken2(latexf);
+            }
+            output << token;
+            if (token == "delim")
+            {
+                token = Tokenizer::nextToken2(latexf);
+                while (token == " " || token == "\n" || token == "\r")
+                {
+                    output << token;
+                    token = Tokenizer::nextToken2(latexf);
+                }
+                output << token;
+                delimStart2 = token[0];
+                token = Tokenizer::nextToken2(latexf);
+                while (token == " ")
+                {
+                    output << token;
+                    token = Tokenizer::nextToken2(latexf);
+                }
+                output << token;
+                delimEnd2 = token[0];
+                if (delimStart == delimStart2 && delimEnd == delimEnd2)
+                {
+                    delimStart = ' ';
+                    delimEnd = ' ';
+                }
+            }
+        }
         token = Tokenizer::nextToken2(latexf);
     }
     if (latexf.eof())
@@ -81,8 +129,10 @@ void TexParser::start()
         return;
     }
 
+    inLineEq = delimStart != ' ' && token[0] == delimStart;
+
+    std::string startToken = token;
     openClose.push_back(token);
-    printOut(token);
     outputMode = false;
     scopeId = 1;
     genFracs.clear();
@@ -92,7 +142,19 @@ void TexParser::start()
 
     std::vector<std::string> mainScope;
     body(token, mainScope, scopeId);
-    if (token == ENDEXP && !error)
+    if (inLineEq)
+        output << delimStart2 << " ";
+    else if (delimStart2 != ' ' && justDelim)
+    {
+        start();
+        return;
+    }
+    else
+        output << translate[startToken] << " ";
+
+    if (((openClose[0] == STARTEXP && token == ENDEXP) ||
+         (delimStart != ' ' && openClose[0][0] == delimStart && token[0] == delimEnd)) &&
+        !error)
     {
         latexf.seekg(0, std::ios::beg);
         latexf.clear();
@@ -103,7 +165,10 @@ void TexParser::start()
         token = Tokenizer::nextToken(latexf);
         std::vector<std::string> mainScope;
         body(token, mainScope, scopeId);
-        printOut(token);
+        if (inLineEq)
+            output << delimEnd2 << " ";
+        else
+            printOut(token);
         start();
     }
     else if (latexf.eof())
@@ -154,6 +219,9 @@ void TexParser::body(std::string &token, std::vector<std::string> &itemsScope, i
 bool TexParser::unexpectedTokens(std::string &token)
 {
     bool e = true;
+    if (inLineEq && token[0] == delimEnd)
+        return e;
+
     if (token[0] == Constants::BACKS)
     {
         e = false;
@@ -192,21 +260,25 @@ bool TexParser::unexpectedTokens(std::string &token)
 void TexParser::stmt(std::string &token, std::vector<std::string> &itemsScope, int scope)
 {
     handleFractions(scope);
+
     if (token[0] == '\r' || token[0] == '\n')
     {
-        if (outputMode)
-            output << token;
-        token = Tokenizer::nextToken(latexf);
+        skipLines(token);
+        return;
     }
+
+    if (token != Constants::DELIM)
+        justDelim = false;
+    
     if (token[0] == Constants::COMMENT)
     {
-        //TODO
+        printOut(token);
         token = Tokenizer::nextToken(latexf);
     }
     else if (token[0] == Constants::SPACEHAT)
     {
-        if (outputMode)
-            output << token;
+        printOut(token);
+        token = Tokenizer::nextToken(latexf);
     }
     else if (token[0] == Constants::OPENBRACE)
     {
@@ -339,6 +411,14 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
         {
             token = Tokenizer::nextToken(latexf);
         }
+        if (inLineEq && token == Constants::DELIM)
+        {
+            syntaxError("delim not allowed inside another delim!");
+        }
+        else if (delimCheck(token))
+        {
+            token = Tokenizer::nextToken(latexf);
+        }
         else if (translateLetters[token] != "" || translateStandardFunctions[token] != "")
         {
             printOut(token);
@@ -358,6 +438,7 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
     {
         printOut(token);
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (isEndExpr(token))
             syntaxError("sub needs argument");
         else
@@ -450,6 +531,7 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> &items
         printOut(token);
         openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (openAtom(token) || closeAtom(token))
         {
             printOut(token);
@@ -462,6 +544,7 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> &items
                 printOut(token);
                 openClose.pop_back();
                 token = Tokenizer::nextToken(latexf);
+                skipLines(token);
                 if (openAtom(token) || closeAtom(token))
                 {
                     printOut(token);
@@ -486,6 +569,7 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> &items
         printOut(token);
         openClose.push_back(token);
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (openAtom(token) || closeAtom(token))
         {
             printOut(token);
@@ -498,6 +582,7 @@ bool TexParser::boundaryItem(std::string &token, std::vector<std::string> &items
                 printOut(token);
                 openClose.pop_back();
                 token = Tokenizer::nextToken(latexf);
+                skipLines(token);
                 if (openAtom(token) || closeAtom(token))
                 {
                     printOut(token);
@@ -585,6 +670,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> &itemsScope
     {
         printOut(token);
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (token[0] == Constants::OPENBRACE)
         {
             printOut(token);
@@ -611,6 +697,7 @@ bool TexParser::binAtom(std::string &token, std::vector<std::string> &itemsScope
         {
             printOut(token);
             token = Tokenizer::nextToken(latexf);
+            skipLines(token);
             if (token[0] == Constants::POWER)
             {
                 syntaxError("double super script");
@@ -677,6 +764,7 @@ bool TexParser::radAtom(std::string &token, std::vector<std::string> &itemsScope
     {
         printOut(token);
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         sqrtExpr(token, itemsScope, scope);
     }
     else if (token == Constants::RADICAL)
@@ -701,6 +789,7 @@ void TexParser::sqrtExpr(std::string &token, std::vector<std::string> &itemsScop
         {
             openClose.pop_back();
             token = Tokenizer::nextToken(latexf);
+            skipLines(token);
             expr1(token, itemsScope, scope);
         }
         else
@@ -745,6 +834,7 @@ bool TexParser::innerAtom(std::string &token, std::vector<std::string> &itemsSco
     if (token == Constants::FRAC)
     {
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (token[0] == Constants::OPENBRACE)
         {
             openClose.push_back(token);
@@ -759,6 +849,7 @@ bool TexParser::innerAtom(std::string &token, std::vector<std::string> &itemsSco
                 openClose.pop_back();
 
                 token = Tokenizer::nextToken(latexf);
+                skipLines(token);
                 if (token[0] == Constants::OPENBRACE)
                 {
                     printOut(Constants::FRAC);
@@ -801,6 +892,7 @@ bool TexParser::innerAtom(std::string &token, std::vector<std::string> &itemsSco
         {
             printOut(token);
             token = Tokenizer::nextToken(latexf);
+            skipLines(token);
             if (translateFuncs[token] != "" || translateGenFracs[token] != "" || token[0] == Constants::POWER || unexpectedTokens(token) || isEndExpr(token))
             {
                 std::string e = Constants::FRAC;
@@ -917,6 +1009,7 @@ bool TexParser::overAtom(std::string &token, std::vector<std::string> &itemsScop
     {
         e = true;
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (token[0] == Constants::OPENBRACE)
         {
             printOut(token);
@@ -957,6 +1050,7 @@ bool TexParser::underAtom(std::string &token, std::vector<std::string> &itemsSco
     {
         e = true;
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (token[0] == Constants::OPENBRACE)
         {
             printOut(token);
@@ -999,6 +1093,7 @@ bool TexParser::accAtom(std::string &token, std::vector<std::string> &itemsScope
     {
         e = true;
         token = Tokenizer::nextToken(latexf);
+        skipLines(token);
         if (token[0] == Constants::OPENBRACE)
         {
             printOut(token);
@@ -1039,15 +1134,45 @@ bool TexParser::opAtom(std::string &token)
     }
     return false;
 }
-// bool TexParser::isNumber(std::string number)
-// {
-//     auto result = double();
-//     auto i = std::istringstream(number);
 
-//     i >> result;
-
-//     return !i.fail() && i.eof();
-// }
+bool TexParser::delimCheck(std::string &token)
+{
+    if (token == Constants::DELIM)
+    {
+        delimStart = ' ';
+        delimEnd = ' ';
+        if (delimStart2 == ' ')
+            printOut("delim");
+        token = Tokenizer::nextToken(latexf);
+        skipLines(token);
+        if (token[0] != Constants::BACKS)
+        {
+            delimStart = token[0];
+            if (delimStart2 == ' ')
+                printOut(token);
+            token = Tokenizer::nextToken(latexf);
+            if (token[0] != Constants::BACKS)
+            {
+                delimEnd = token[0];
+                if (delimStart2 == ' ')
+                {
+                    printOut(token);
+                    if (outputMode)
+                    {
+                        delimStart2 = delimStart;
+                        delimEnd2 = delimEnd;
+                    }
+                }
+            }
+            else
+                syntaxError("argument for delim not allowed");
+        }
+        else
+            syntaxError("argument for delim not allowed");
+        return true;
+    }
+    return false;
+}
 
 bool TexParser::isWord(std::string letter)
 {
