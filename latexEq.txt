@@ -80,9 +80,6 @@ bracketsizes ( 5 "(" "\\N'parenleftbig'" "\\N'parenleftBig'"
 	"\\N'parenleftbigg'" "\\N'parenleftBigg'"
 .cc.end
 
-.EQ
-delim $$
-.EN
 .SH "Adjusting the Syntax"
 The logic used in eqn to partition equations may seem odd to its new
 users; for instant in \(lqO(n sup 2)\(rq, the expected result may
@@ -345,4 +342,4 @@ x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 
 .BL
 \delim @@
 .EL
-@ a + bf + \alpha s @
+@ a + bf + \alpha + 4 @

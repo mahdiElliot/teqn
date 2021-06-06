@@ -269,7 +269,7 @@ void TexParser::stmt(std::string &token, std::vector<std::string> &itemsScope, i
 
     if (token != Constants::DELIM)
         justDelim = false;
-    
+
     if (token[0] == Constants::COMMENT)
     {
         printOut(token);
@@ -407,11 +407,10 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
             printOut(token);
             token = Tokenizer::nextToken(latexf);
         }
-        else if (opAtom(token))
+        else if (opAtom(token, itemsScope, scope))
         {
-            token = Tokenizer::nextToken(latexf);
         }
-        if (inLineEq && token == Constants::DELIM)
+        else if (inLineEq && token == Constants::DELIM)
         {
             syntaxError("delim not allowed inside another delim!");
         }
@@ -1125,11 +1124,65 @@ bool TexParser::accAtom(std::string &token, std::vector<std::string> &itemsScope
     return e;
 }
 
-bool TexParser::opAtom(std::string &token)
+bool TexParser::opAtom(std::string &token, std::vector<std::string> &itemsScope, int scope)
 {
     if (token == Constants::SUM || token == Constants::PROD || token == Constants::COPROD || token == Constants::INTEGRAL)
     {
         printOut(token);
+        token = Tokenizer::nextToken(latexf);
+        skipLines(token);
+        if (token[0] == Constants::UNDERLINE)
+        {
+            printOut("from");
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+            if (token[0] == Constants::OPENBRACE)
+            {
+                printOut(token);
+                openClose.push_back(token);
+                token = Tokenizer::nextToken(latexf);
+                std::vector<std::string> localScope;
+                scopeId++;
+                body(token, localScope, scopeId);
+                if (token[0] == Constants::CLOSEBRACE)
+                {
+                    openClose.pop_back();
+                    printOut(token);
+                }
+                else
+                    syntaxError(std::string(1, Constants::CLOSEBRACE));
+            }
+            else
+                printOut(token);
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+            if (token[0] == Constants::POWER)
+            {
+                printOut("to");
+                token = Tokenizer::nextToken(latexf);
+                skipLines(token);
+                if (token[0] == Constants::OPENBRACE)
+                {
+                    printOut(token);
+                    openClose.push_back(token);
+                    token = Tokenizer::nextToken(latexf);
+                    std::vector<std::string> localScope;
+                    scopeId++;
+                    body(token, localScope, scopeId);
+                    if (token[0] == Constants::CLOSEBRACE)
+                    {
+                        openClose.pop_back();
+                        printOut(token);
+                    }
+                    else
+                        syntaxError(std::string(1, Constants::CLOSEBRACE));
+                }
+                else
+                    printOut(token);
+
+                token = Tokenizer::nextToken(latexf);
+            }
+        }
         return true;
     }
     return false;
@@ -1149,7 +1202,8 @@ bool TexParser::delimCheck(std::string &token)
         {
             delimStart = token[0];
             if (delimStart2 == ' ')
-                printOut(token);
+                if(outputMode)
+                    output<<token;
             token = Tokenizer::nextToken(latexf);
             if (token[0] != Constants::BACKS)
             {

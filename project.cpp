@@ -16,7 +16,7 @@ int main()
     input.close();
     TexParser parser(latexEq, "out.txt");
     parser.parse();
-    // remove(latexEq);
+    remove(latexEq);
     // ifstream f;
     // f.open(latexEq, ios::in);
     // std::istream::streampos p = f.tellg(); // or, in C++11: auto p = f.tellg();

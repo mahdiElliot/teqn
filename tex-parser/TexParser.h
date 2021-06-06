@@ -220,7 +220,7 @@ private:
     bool underAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool radAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool accAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
-    bool opAtom(std::string &token);
+    bool opAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool ordAtom(std::string &token);
     bool generalizedFracs(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void handleFractions(int scope);
