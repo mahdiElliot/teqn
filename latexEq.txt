@@ -25,6 +25,10 @@ Their main difference is that in text styles formulas are
 vertically more compact to reduce the amount of extra
 spacing required to be inserted between lines.
 .EQ
+delim $$
+.EN
+
+.EQ
 (x + y) sup n = sum from i=0 to n left ( pile {n above i} right ) x sup i y sup n-i
 .EN
 .sp -.5
@@ -45,6 +49,6 @@ x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 
 S(\omega)=1.466, H_s^2 \frac{\omega_0^5}{\omega^6} \exp\Bigl[-3^{\frac{\omega}{\omega_0}}\Bigr]^2
 .EL
 .BL
-x + 1 + \left[sd \over \zeta \right] \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}} + \int_{i = 0}^{100} \sum_{j = 1}^{n} x
+x + 1 + \left[sd \over \zeta \right \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}} + \int_{i = 0}^{100} \sum_{j = 1}^{n} x
 .EL
 @ a + bf + \alpha + 4 @

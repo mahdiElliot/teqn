@@ -16,6 +16,7 @@ public:
     static bool isDigit(char c);
 
     static int getLine();
+    static void setLine(int line);
 };
 #include "Tokenizer.cpp"
 #endif

@@ -138,14 +138,17 @@ void TexParser::start()
     genFracs.clear();
 
     std::istream::streampos p = latexf.tellg();
+    int line = Tokenizer::getLine();
     token = Tokenizer::nextToken(latexf);
 
     std::vector<std::string> mainScope;
     body(token, mainScope, scopeId);
+    Tokenizer::setLine(line);
     if (inLineEq)
         output << delimStart2 << " ";
     else if (delimStart2 != ' ' && justDelim)
     {
+        Tokenizer::setLine(Tokenizer::getLine() + 2);
         start();
         return;
     }
@@ -1202,8 +1205,8 @@ bool TexParser::delimCheck(std::string &token)
         {
             delimStart = token[0];
             if (delimStart2 == ' ')
-                if(outputMode)
-                    output<<token;
+                if (outputMode)
+                    output << token;
             token = Tokenizer::nextToken(latexf);
             if (token[0] != Constants::BACKS)
             {

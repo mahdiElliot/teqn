@@ -8,6 +8,11 @@ int Tokenizer::getLine()
     return line;
 }
 
+void Tokenizer::setLine(int l)
+{
+    line = l;
+}
+
 bool Tokenizer::isDigit(char c)
 {
     return c >= '0' && c <= '9';
