@@ -6,6 +6,7 @@ TexParser::TexParser(std::string input, std::string output)
 {
     latexf.open(input, std::ios::in);
     this->output.open(output, std::ios::out);
+    errorLog.open("error-log.txt", std::ios::out);
 }
 
 TexParser::~TexParser()
@@ -24,7 +25,7 @@ void TexParser::parse()
 void TexParser::syntaxError(std::string e)
 {
     error = true;
-    std::cout << std::to_string(Tokenizer::getLine()) << ": syntax error in: " << e << '\n';
+    errorLog << std::to_string(Tokenizer::getLine()) << ": syntax error in: " << e << '\n';
 }
 
 void TexParser::skipLines(std::string &token)
@@ -84,6 +85,15 @@ void TexParser::start()
     std::string token = Tokenizer::nextToken2(latexf);
     while (token != "" && token != STARTEXP && token != ENDEXP && (delimStart == ' ' || token[0] != delimStart))
     {
+        if (token[0] == Constants::BACKS)
+        {
+            token = Tokenizer::nextToken2(latexf);
+            while ((token != "\n" || token != "\r") && token != "")
+            {
+                output << token;
+                token = Tokenizer::nextToken2(latexf);
+            }
+        }
         output << token;
         if (token == ".EQ")
         {
@@ -123,11 +133,8 @@ void TexParser::start()
     }
     if (latexf.eof())
         return;
-    else if (token == ENDEXP)
-    {
+    if (token == ENDEXP)
         syntaxError("first of expression not specified");
-        return;
-    }
 
     inLineEq = delimStart != ' ' && token[0] == delimStart;
 

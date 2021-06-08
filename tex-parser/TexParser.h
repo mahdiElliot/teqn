@@ -175,6 +175,7 @@ private:
 
     std::ifstream latexf;
     std::ofstream output;
+    std::ofstream errorLog;
 
     char delimStart = ' ';
     char delimStart2 = ' ';
