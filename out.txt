@@ -1,1 +1,49 @@
-.BL / .EL 
+.\" PSTITLE: Typesetting Mathematics with Neateqn
+.so neat__.ms
+.ds en.cl "#936
+.post.info Title "Typesetting Mathematics with Neateqn"
+.post.info Author "Ali Gholami Rudi"
+.HD
+.TL
+\f(HD\s+8Typesetting Mathematics with Neateqn\m0\s-8\fP
+.AU  
+\fIA. G. Rudi\fP
+.sp 3
+This document briefly introduces Neateqn, an eqn implementation for
+typesetting mathematical formulas in Neatroff.  For further
+information about Neatroff and Neateqn, see
+http:/\h'-.3n'/litcave.rudi.ir/.
+
+.EQ
+delim $$
+.EN
+
+.SH "The Algorithm"
+Neatroff follows the rules described in appendix \s-1G\s+1 of Knuth's
+Texbook, which explains Tex's algorithm for typesetting mathematical
+formulas.  In Tex, the sub-formulas of a formula are always typeset in
+one of the eight predefined styles.  The formulas inside
+\ .EQ .EN .BL blocks are rendered in displayed styles and inline
+equations are rendered in text styles.
+Their main difference is that in text styles formulas are
+vertically more compact to reduce the amount of extra
+spacing required to be inserted between lines. $ x sup 2 $
+.EQ
+delim off
+.EN
+asjfasfj $ xx sup 4 $
+
+.EQ
+(x + y) sup n = sum from i=0 to n left ( pile {n above i} right ) x sup i y sup n-i
+.EN
+.sp -.5
+.EQ
+left [ a right ] +
+left ( a over b right ) +
+left { {x + a over b} over {y + c over d}  }
++
+sqrt {a} + sqrt {a over b} + sqrt { {x + a over b} over {y + c over d} }
+.EN
+.EQ
+x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )}
+.EN

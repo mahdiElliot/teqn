@@ -85,16 +85,17 @@ void TexParser::start()
     std::string token = Tokenizer::nextToken2(latexf);
     while (token != "" && token != STARTEXP && token != ENDEXP && (delimStart == ' ' || token[0] != delimStart))
     {
+        output << token;
         if (token[0] == Constants::BACKS)
         {
             token = Tokenizer::nextToken2(latexf);
-            while ((token != "\n" || token != "\r") && token != "")
+            while ((token != "\n" && token != "\r") && token != "")
             {
                 output << token;
                 token = Tokenizer::nextToken2(latexf);
             }
+            output << token;
         }
-        output << token;
         if (token == ".EQ")
         {
             token = Tokenizer::nextToken2(latexf);
@@ -114,6 +115,24 @@ void TexParser::start()
                 }
                 output << token;
                 delimStart2 = token[0];
+                if (token == "o")
+                {
+                    token = Tokenizer::nextToken2(latexf);
+                    output << token;
+                    delimEnd2 = token[0];
+                    if (token == "f")
+                    {
+                        token = Tokenizer::nextToken2(latexf);
+                        output << token;
+                        if (token == "f")
+                        {
+                            delimStart2 = ' ';
+                            delimEnd2 = ' ';
+                        }
+                        continue;
+                    }
+                }
+
                 token = Tokenizer::nextToken2(latexf);
                 while (token == " ")
                 {
