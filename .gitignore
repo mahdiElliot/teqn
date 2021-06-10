@@ -1,2 +1,6 @@
 *.pdf
 *.out
+notFoundTokens.txt
+grammar.txt
+latexEq.txt
+out.txt
