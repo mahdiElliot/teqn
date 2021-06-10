@@ -1,7 +1,20 @@
 TEX equations to neateqn converter preprocessor
 ===========================
-Compile "project.cpp", run the execution file, write troff that contains equations starting with ".BL" and ending with ".EL" as input; the output file will be in "out.txt".
-Also the execution file is added to neatroff as a preprocessor and a new feature.
+Compile "project.cpp", run the execution file, write troff that contains equations starting with ".BL" and ending with ".EL" as input;
+the output will be shown on the screen, it will also be in "out.txt".
+Although The execution file is added to neatroff as a preprocessor and a new feature. If there is any error in compiling or syntax, the errors are available viewed in "error-log.txt".
+
+Example:
+input:
+.BL
+a \times \sqrt{{b ^ 2} ^ 2 \over {c_1 + d_2}}
+.EL
+output:
+.EQ
+a times sqrt { { { b sup 2 } sup 2 } over { { c sub 1 + d sub 2 } } } 
+.EN
+
+A wide example is available in "latexEq.txt", and the result is in "out.txt".
 neatroff:
 https://github.com/aligrudi/neatroff_make
 handled symbols and expresions:
