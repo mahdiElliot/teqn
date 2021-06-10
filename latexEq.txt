@@ -6,7 +6,7 @@
 .HD
 .TL
 \f(HD\s+8Typesetting Mathematics with Neateqn\m0\s-8\fP
-.AU  
+.AU
 \fIA. G. Rudi\fP
 .sp 3
 This document briefly introduces Neateqn, an eqn implementation for
@@ -14,25 +14,16 @@ typesetting mathematical formulas in Neatroff.  For further
 information about Neatroff and Neateqn, see
 http:/\h'-.3n'/litcave.rudi.ir/.
 
-.EQ
-delim $$
-.EN
-
 .SH "The Algorithm"
 Neatroff follows the rules described in appendix \s-1G\s+1 of Knuth's
 Texbook, which explains Tex's algorithm for typesetting mathematical
 formulas.  In Tex, the sub-formulas of a formula are always typeset in
 one of the eight predefined styles.  The formulas inside
-\ .EQ .EN .BL blocks are rendered in displayed styles and inline
+\&\s-1.EQ/.EN\s+1 blocks are rendered in displayed styles and inline
 equations are rendered in text styles.
 Their main difference is that in text styles formulas are
 vertically more compact to reduce the amount of extra
-spacing required to be inserted between lines. $ x sup 2 $
-.EQ
-delim off
-.EN
-asjfasfj $ xx sup 4 $
-
+spacing required to be inserted between lines.
 .EQ
 (x + y) sup n = sum from i=0 to n left ( pile {n above i} right ) x sup i y sup n-i
 .EN
@@ -47,3 +38,13 @@ sqrt {a} + sqrt {a over b} + sqrt { {x + a over b} over {y + c over d} }
 .EQ
 x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )}
 .EN
+.BL
+\delim @@
+.EL
+.BL
+S(\omega)=1.466, H_s^2 \frac{\omega_0^5}{\omega^6} \exp\Bigl[-3^{\frac{\omega}{\omega_0}}\Bigr]^2
+.EL
+.BL
+x + 1 + \left[sd \over \zeta \right] \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}} + \int_{i = 0}^{100} \sum_{j = 1}^{n} x
+.EL
+@ a + bf + \alpha + 4 @
