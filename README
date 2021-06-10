@@ -1,8 +1,9 @@
 TEX equations to neateqn converter preprocessor
 ===========================
-create a "latexEq.txt" file, write troff that contains equations starting with ".BL" and ending with ".EL".
-compile and run "project.cpp", the output file will be in "out.txt".
-
+Compile "project.cpp", run the execution file, write troff that contains equations starting with ".BL" and ending with ".EL" as input; the output file will be in "out.txt".
+Also the execution file is added to neatroff as a preprocessor and a new feature.
+neatroff:
+https://github.com/aligrudi/neatroff_make
 handled symbols and expresions:
 greek and hebrew letters
 
