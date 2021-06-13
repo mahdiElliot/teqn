@@ -112,25 +112,12 @@ bool TexParser::isEndExpr(std::string &token)
     return false;
 }
 
-void TexParser::start()
+void TexParser::skip(std::string &token)
 {
-    justDelim = true;
-    inLineEq = false;
-    openClose.clear();
-    std::string token = Tokenizer::nextToken2(latexf);
     while (token != "" && token != STARTEXP && token != ENDEXP && (delimStart == ' ' || token[0] != delimStart))
     {
         output << token;
-        if (token[0] == Constants::BACKS)
-        {
-            token = Tokenizer::nextToken2(latexf);
-            while ((token != "\n" && token != "\r") && token != "")
-            {
-                output << token;
-                token = Tokenizer::nextToken2(latexf);
-            }
-            output << token;
-        }
+        backslashSkip(token);
         if (token == ".EQ")
         {
             token = Tokenizer::nextToken2(latexf);
@@ -185,19 +172,25 @@ void TexParser::start()
         }
         token = Tokenizer::nextToken2(latexf);
     }
-    if (latexf.eof())
-        return;
-    if (token == ENDEXP)
-        syntaxError("first of expression not specified");
+}
 
-    inLineEq = delimStart != ' ' && token[0] == delimStart;
+void TexParser::backslashSkip(std::string &token)
+{
+    if (token[0] == Constants::BACKS)
+    {
+        token = Tokenizer::nextToken2(latexf);
+        while ((token != "\n" && token != "\r") && token != "")
+        {
+            output << token;
+            token = Tokenizer::nextToken2(latexf);
+        }
+        output << token;
+    }
+}
 
+void TexParser::parseAndPrint(std::string &token)
+{
     std::string startToken = token;
-    openClose.push_back(token);
-    outputMode = false;
-    scopeId = 1;
-    genFracs.clear();
-
     std::istream::streampos p = latexf.tellg();
     int line = Tokenizer::getLine();
     token = Tokenizer::nextToken(latexf);
@@ -237,6 +230,28 @@ void TexParser::start()
     }
     else if (latexf.eof())
         syntaxError("error, end of expression not specified");
+}
+
+void TexParser::start()
+{
+    justDelim = true;
+    inLineEq = false;
+    openClose.clear();
+    std::string token = Tokenizer::nextToken2(latexf);
+    skip(token);
+    if (latexf.eof())
+        return;
+    if (token == ENDEXP)
+        syntaxError("first of expression not specified");
+
+    inLineEq = delimStart != ' ' && token[0] == delimStart;
+
+    openClose.push_back(token);
+    outputMode = false;
+    scopeId = 1;
+    genFracs.clear();
+
+    parseAndPrint(token);
 }
 
 void TexParser::handleFractions(int scope)
@@ -279,9 +294,7 @@ void TexParser::body(std::string &token, std::vector<std::string> &itemsScope, i
 
     stmt(token, itemsScope, scope);
     if (!latexf.eof() && token != ENDEXP)
-    {
         body(token, itemsScope, scope);
-    }
 }
 
 bool TexParser::unexpectedTokens(std::string &token)
@@ -838,10 +851,6 @@ bool TexParser::radAtom(std::string &token, std::vector<std::string> &itemsScope
         skipLines(token);
         sqrtExpr(token, itemsScope, scope);
     }
-    else if (token == Constants::RADICAL)
-    {
-        //TODO
-    }
     else
         e = false;
     return e;
@@ -983,6 +992,80 @@ bool TexParser::innerAtom(std::string &token, std::vector<std::string> &itemsSco
     return e;
 }
 
+void TexParser::matrixBody(std::string &token, std::vector<std::string> &itemsScope, int scope)
+{
+    if (token[0] == Constants::OPENBRACE)
+    {
+        printOut(token);
+        token = Tokenizer::nextToken(latexf);
+        skipLines(token);
+        std::vector<char> columns;
+        while (token == "c" || token == "l" || token == "r")
+        {
+            columns.push_back(token[0]);
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+        }
+        if (columns.size() == 0)
+            syntaxError("no column is specified");
+        if (token[0] == Constants::CLOSEBRACE)
+        {
+            std::vector<std::istream::streampos> mx[columns.size()];
+            std::istream::streampos p = latexf.tellg();
+            mx[0].push_back(p);
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+            bool temp = outputMode;
+            outputMode = false;
+            int scopeTemp = scopeId;
+            matrix(token, itemsScope, scope, columns, mx);
+            outputMode = temp;
+            if (token == Constants::END)
+            {
+                if (outputMode)
+                    scopeId = scopeTemp;
+                p = latexf.tellg();
+                printMatrix(token, columns, mx);
+                latexf.seekg(0, std::ios::beg);
+                latexf.clear();
+                latexf.seekg(p);
+                token = Tokenizer::nextToken(latexf);
+                skipLines(token);
+                if (token[0] == Constants::OPENBRACE)
+                {
+                    token = Tokenizer::nextToken(latexf);
+                    skipLines(token);
+                    if (isArrayToken(token))
+                    {
+                        token = Tokenizer::nextToken(latexf);
+                        skipLines(token);
+                        if (token[0] == Constants::CLOSEBRACE)
+                        {
+                            printOut(token);
+                            if (openClose.back() == "\\\\")
+                                openClose.pop_back();
+                            openClose.pop_back();
+                            token = Tokenizer::nextToken(latexf);
+                        }
+                        else
+                            syntaxError("} is missing");
+                    }
+                    else
+                        syntaxError(token + " undefined key");
+                }
+                else
+                    syntaxError("{ is missing");
+            }
+            else
+                syntaxError("end of begin is missing");
+        }
+        else
+            syntaxError(token + " not allowed, } is missing");
+    }
+    else
+        syntaxError("{ is missing");
+}
+
 bool TexParser::generalizedFracs(std::string &token, std::vector<std::string> &itemsScope, int scope)
 {
     bool e = true;
@@ -1085,76 +1168,7 @@ bool TexParser::generalizedFracs(std::string &token, std::vector<std::string> &i
                     openClose.push_back(Constants::BEGIN);
                     token = Tokenizer::nextToken(latexf);
                     skipLines(token);
-                    if (token[0] == Constants::OPENBRACE)
-                    {
-                        printOut(token);
-                        token = Tokenizer::nextToken(latexf);
-                        skipLines(token);
-                        std::vector<char> columns;
-                        while (token == "c" || token == "l" || token == "r")
-                        {
-                            columns.push_back(token[0]);
-                            token = Tokenizer::nextToken(latexf);
-                            skipLines(token);
-                        }
-                        if (columns.size() == 0)
-                            syntaxError("no column is specified");
-                        if (token[0] == Constants::CLOSEBRACE)
-                        {
-                            std::vector<std::istream::streampos> mx[columns.size()];
-                            std::istream::streampos p = latexf.tellg();
-                            mx[0].push_back(p);
-                            token = Tokenizer::nextToken(latexf);
-                            skipLines(token);
-                            bool temp = outputMode;
-                            outputMode = false;
-                            int scopeTemp = scopeId;
-                            matrix(token, itemsScope, scope, columns, mx);
-                            outputMode = temp;
-                            if (token == Constants::END)
-                            {
-                                if (outputMode)
-                                    scopeId = scopeTemp;
-                                p = latexf.tellg();
-                                printMatrix(token, columns, mx);
-                                latexf.seekg(0, std::ios::beg);
-                                latexf.clear();
-                                latexf.seekg(p);
-                                token = Tokenizer::nextToken(latexf);
-                                skipLines(token);
-                                if (token[0] == Constants::OPENBRACE)
-                                {
-                                    token = Tokenizer::nextToken(latexf);
-                                    skipLines(token);
-                                    if (isArrayToken(token))
-                                    {
-                                        token = Tokenizer::nextToken(latexf);
-                                        skipLines(token);
-                                        if (token[0] == Constants::CLOSEBRACE)
-                                        {
-                                            printOut(token);
-                                            if (openClose.back() == "\\\\")
-                                                openClose.pop_back();
-                                            openClose.pop_back();
-                                            token = Tokenizer::nextToken(latexf);
-                                        }
-                                        else
-                                            syntaxError("} is missing");
-                                    }
-                                    else
-                                        syntaxError(token + " undefined key");
-                                }
-                                else
-                                    syntaxError("{ is missing");
-                            }
-                            else
-                                syntaxError("end of begin is missing");
-                        }
-                        else
-                            syntaxError(token + " not allowed, } is missing");
-                    }
-                    else
-                        syntaxError("{ is missing");
+                    matrixBody(token, itemsScope, scope);
                 }
                 else
                     syntaxError("} is missing");

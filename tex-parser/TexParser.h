@@ -192,12 +192,15 @@ private:
     std::unordered_map<int, std::string> genFracs;
 
     void start();
+    void skip(std::string &token);
+    void backslashSkip(std::string &token);
+    void parseAndPrint(std::string &token);
     bool delimCheck(std::string &token);
+
+
     void body(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void stmt(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void expr(std::string &token, std::vector<std::string> &itemsScope, int scope);
-    void expr1(std::string &token, std::vector<std::string> &itemsScope, int scope);
-    void sqrtExpr(std::string &token, std::vector<std::string> &itemsScope, int scope);
 
     bool unexpectedTokens(std::string &token);
 
@@ -211,6 +214,7 @@ private:
 
     bool fourWayChoice(std::string &token);
 
+    void expr1(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool binAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool relAtom(std::string &token);
     bool openAtom(std::string &token);
@@ -221,12 +225,14 @@ private:
     bool overAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool underAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool radAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
+    void sqrtExpr(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool accAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool opAtom(std::string &token, std::vector<std::string> &itemsScope, int scope);
     bool ordAtom(std::string &token);
     bool generalizedFracs(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void handleFractions(int scope);
     bool greekHebrowLetters(std::string token);
+    void matrixBody(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void matrix(std::string &token, std::vector<std::string> &itemsScope,
                 int scope, std::vector<char> columns, std::vector<std::istream::streampos> mx[]);
     void printMatrix(std::string &token, std::vector<char> columns, std::vector<std::istream::streampos> mx[]);
