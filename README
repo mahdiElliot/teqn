@@ -57,6 +57,13 @@ underline symbol: _ => sub
 \vec{}
 \odot{}
 
+for matrix :
+\begin {array}{cols} row1 \\ row2 \\ ... rowm \end{array}
+cols can be : c, l, r
+example:
+\begin {array}{cl} x & y \\ z & \alpha \end{array}
+
+
 also, if you want to have tex equations inline, you can use \delim like below which is similar to neat eqn delim definition:
 .BL
 \delim $$
