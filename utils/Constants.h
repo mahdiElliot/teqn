@@ -82,6 +82,7 @@ public:
     
 
     //special words
+    static const char *BEGIN;
     static const char *TIMES;
     static const char *SINGLEVERT;
     static const char *DOUBLEVERT;
@@ -198,6 +199,8 @@ public:
     static const char *BIGCIRC;
 
     static const char *DELIM;
+
+    static const char *END;
 
 };
 #include "Constants.cpp"

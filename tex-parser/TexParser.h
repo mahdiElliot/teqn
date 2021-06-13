@@ -135,7 +135,8 @@ private:
     std::unordered_map<std::string, std::string> translateGenFracs = {
         {Constants::OVER, "over"},
         {Constants::ATOP, "above"},
-        {Constants::CHOOSE, "above"}};
+        {Constants::CHOOSE, "above"},
+        {"array", "matrix"}};
 
     std::unordered_map<std::string, std::string> translateStandardFunctions = {
         {"\\arccos", "arccos"},
@@ -226,7 +227,12 @@ private:
     bool generalizedFracs(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void handleFractions(int scope);
     bool greekHebrowLetters(std::string token);
+    void matrix(std::string &token, std::vector<std::string> &itemsScope,
+                int scope, std::vector<char> columns, std::vector<std::istream::streampos> mx[]);
+    void printMatrix(std::string &token, std::vector<char> columns, std::vector<std::istream::streampos> mx[]);
+    void matrixColumn(std::string &token, std::vector<std::string> &itemsScope, int scope);
 
+    bool isArrayToken(std::string &token);
     bool isEndExpr(std::string &token);
 
     bool isWord(std::string letter);

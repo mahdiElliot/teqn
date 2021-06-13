@@ -1,3 +1,4 @@
+
 .\" PSTITLE: Typesetting Mathematics with Neateqn
 .so neat__.ms
 .ds en.cl "#936
@@ -47,4 +48,13 @@ S ( omega ) = 1 . 4 6 6 , H sub s sup 2 { omega sub 0 sup 5 } over { omega sup 6
 .EQ 
 x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} + int from { i = 0 } to { 1 0 0 } sum from { j = 1 } to { n } x 
 .EN 
-@ a + b f + alpha + 4 @ 
+this is a text for @ a + b f + alpha + 4 @  test.
+.EQ 
+left [ matrix { 
+ccol { 
+alpha sub i above 
+beta sup { ( 9 0 + pi ) times kappa } }
+ccol { alpha sub i sup phi above beta sup { GAMMA + 1 } 
+}
+} right ] 
+.EN 

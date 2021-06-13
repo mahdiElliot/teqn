@@ -1,5 +1,6 @@
 #include "Constants.h"
 
+const char *Constants::BEGIN = "\\begin";
 const char *Constants::TIMES = "\\times";
 const char *Constants::BACKSLASH = "\\backslash";
 const char *Constants::SINGLEVERT = "\\vert";
@@ -144,4 +145,4 @@ const char *Constants::EMPTY = "\\O";
 const char *Constants::IN = "\\in";
 const char *Constants::BIGCIRC = "\\bigcirc";
 const char *Constants::DELIM = "\\delim";
-
+const char *Constants::END = "\\end";

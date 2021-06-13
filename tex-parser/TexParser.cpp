@@ -50,6 +50,42 @@ void TexParser::printOut(std::string token)
     output << (t == "" ? token : t) << " ";
 }
 
+bool TexParser::isArrayToken(std::string &token)
+{
+    if (token == "a")
+    {
+        std::string t = "a";
+        char c;
+        latexf.get(c);
+        if (c == 'r')
+        {
+            t += c;
+            latexf.get(c);
+            if (c == 'r')
+            {
+                t += c;
+                latexf.get(c);
+                if (c == 'a')
+                {
+                    t += c;
+                    latexf.get(c);
+                    if (c == 'y')
+                    {
+                        t += c;
+                        token = t;
+                        return true;
+                    }
+                    latexf.unget();
+                }
+                latexf.unget();
+            }
+            latexf.unget();
+        }
+        latexf.unget();
+    }
+    return false;
+}
+
 bool TexParser::isEndExpr(std::string &token)
 {
     if (delimEnd != ' ' && openClose[0][0] == delimStart && token[0] == delimEnd)
@@ -71,8 +107,7 @@ bool TexParser::isEndExpr(std::string &token)
             }
             latexf.unget();
         }
-        else
-            latexf.unget();
+        latexf.unget();
     }
     return false;
 }
@@ -235,7 +270,11 @@ void TexParser::body(std::string &token, std::vector<std::string> &itemsScope, i
     if ((token[0] == Constants::CLOSEBRACE && openClose.back() == std::string(1, Constants::OPENBRACE)) ||
         (token[0] == Constants::CLOSEBRACKET && openClose.back() == std::string(1, Constants::OPENBRACKET)) ||
         (token == Constants::RIGHT && openClose.back() == Constants::LEFT) ||
-        (token == Constants::BIGR && openClose.back() == Constants::BIGL))
+        (token == Constants::BIGR && openClose.back() == Constants::BIGL) ||
+        (token[0] == Constants::AND && openClose.back()[0] == Constants::AND) ||
+        (token == Constants::END && openClose.back() == Constants::BEGIN) ||
+        (token == Constants::END && openClose.back() == "\\\\" && openClose[openClose.size() - 2] == Constants::BEGIN) ||
+        (token == "\\\\" && openClose.back() == "\\\\"))
         return;
 
     stmt(token, itemsScope, scope);
@@ -486,6 +525,10 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
     {
         printOut(token);
         token = Tokenizer::nextToken(latexf);
+    }
+    else
+    {
+        syntaxError(token + " unexpected token!");
     }
 }
 
@@ -1024,10 +1067,200 @@ bool TexParser::generalizedFracs(std::string &token, std::vector<std::string> &i
                 output << "} } right )";
         }
     }
+    else if (token == Constants::BEGIN)
+    {
+        token = Tokenizer::nextToken(latexf);
+        skipLines(token);
+        if (token[0] == Constants::OPENBRACE)
+        {
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+            if (isArrayToken(token))
+            {
+                printOut(token);
+                token = Tokenizer::nextToken(latexf);
+                skipLines(token);
+                if (token[0] == Constants::CLOSEBRACE)
+                {
+                    openClose.push_back(Constants::BEGIN);
+                    token = Tokenizer::nextToken(latexf);
+                    skipLines(token);
+                    if (token[0] == Constants::OPENBRACE)
+                    {
+                        printOut(token);
+                        token = Tokenizer::nextToken(latexf);
+                        skipLines(token);
+                        std::vector<char> columns;
+                        while (token == "c" || token == "l" || token == "r")
+                        {
+                            columns.push_back(token[0]);
+                            token = Tokenizer::nextToken(latexf);
+                            skipLines(token);
+                        }
+                        if (columns.size() == 0)
+                            syntaxError("no column is specified");
+                        if (token[0] == Constants::CLOSEBRACE)
+                        {
+                            std::vector<std::istream::streampos> mx[columns.size()];
+                            std::istream::streampos p = latexf.tellg();
+                            mx[0].push_back(p);
+                            token = Tokenizer::nextToken(latexf);
+                            skipLines(token);
+                            bool temp = outputMode;
+                            outputMode = false;
+                            int scopeTemp = scopeId;
+                            matrix(token, itemsScope, scope, columns, mx);
+                            outputMode = temp;
+                            if (token == Constants::END)
+                            {
+                                if (outputMode)
+                                    scopeId = scopeTemp;
+                                p = latexf.tellg();
+                                printMatrix(token, columns, mx);
+                                latexf.seekg(0, std::ios::beg);
+                                latexf.clear();
+                                latexf.seekg(p);
+                                token = Tokenizer::nextToken(latexf);
+                                skipLines(token);
+                                if (token[0] == Constants::OPENBRACE)
+                                {
+                                    token = Tokenizer::nextToken(latexf);
+                                    skipLines(token);
+                                    if (isArrayToken(token))
+                                    {
+                                        token = Tokenizer::nextToken(latexf);
+                                        skipLines(token);
+                                        if (token[0] == Constants::CLOSEBRACE)
+                                        {
+                                            printOut(token);
+                                            if (openClose.back() == "\\\\")
+                                                openClose.pop_back();
+                                            openClose.pop_back();
+                                            token = Tokenizer::nextToken(latexf);
+                                        }
+                                        else
+                                            syntaxError("} is missing");
+                                    }
+                                    else
+                                        syntaxError(token + " undefined key");
+                                }
+                                else
+                                    syntaxError("{ is missing");
+                            }
+                            else
+                                syntaxError("end of begin is missing");
+                        }
+                        else
+                            syntaxError(token + " not allowed, } is missing");
+                    }
+                    else
+                        syntaxError("{ is missing");
+                }
+                else
+                    syntaxError("} is missing");
+            }
+            else
+                syntaxError(token + " undefined key");
+        }
+        else
+            syntaxError("{ is mssing");
+    }
     else
         e = false;
 
     return e;
+}
+
+void TexParser::matrix(std::string &token, std::vector<std::string> &itemsScope,
+                       int scope, std::vector<char> columns, std::vector<std::istream::streampos> mx[])
+{
+    if (token == Constants::END)
+        return;
+    openClose.push_back("\\\\");
+    for (int i = 0; i < columns.size() - 1; i++)
+        openClose.push_back("&");
+
+    int count = 1;
+    matrixColumn(token, itemsScope, scope);
+    while (token[0] == Constants::AND)
+    {
+        openClose.pop_back();
+        std::istream::streampos p = latexf.tellg();
+        mx[count].push_back(p);
+        count++;
+        token = Tokenizer::nextToken(latexf);
+        skipLines(token);
+        matrixColumn(token, itemsScope, scope);
+    }
+    if (token == "\\\\")
+        if (openClose.back() == "\\\\")
+        {
+            openClose.pop_back();
+            std::istream::streampos p = latexf.tellg();
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+            if (token != Constants::END)
+                mx[0].push_back(p);
+            matrix(token, itemsScope, scope, columns, mx);
+        }
+        else if (openClose.back()[0] == Constants::AND)
+            syntaxError("columns less than expected");
+        else if (token == Constants::END)
+            openClose.pop_back();
+}
+
+void TexParser::matrixColumn(std::string &token, std::vector<std::string> &itemsScope, int scope)
+{
+    std::vector<std::string> localScope;
+    scopeId++;
+    body(token, localScope, scopeId);
+}
+
+void TexParser::printMatrix(std::string &token, std::vector<char> columns, std::vector<std::istream::streampos> mx[])
+{
+    if (outputMode)
+    {
+        openClose.push_back(Constants::BEGIN);
+        for (int i = 0; i < columns.size(); i++)
+        {
+            printOut(std::string(1, columns[i]) + "col {");
+
+            latexf.seekg(0, std::ios::beg);
+            latexf.clear();
+            latexf.seekg(mx[i][0]);
+            if (i != columns.size() - 1)
+                openClose.push_back("&");
+            else
+                openClose.push_back("\\\\");
+
+            token = Tokenizer::nextToken(latexf);
+            skipLines(token);
+
+            std::vector<std::string> localScope;
+            scopeId++;
+            body(token, localScope, scopeId);
+            openClose.pop_back();
+            for (int j = 1; j < mx[i].size(); j++)
+            {
+                printOut("above");
+                latexf.seekg(0, std::ios::beg);
+                latexf.clear();
+                latexf.seekg(mx[i][j]);
+                if (i != columns.size() - 1)
+                    openClose.push_back("&");
+                else
+                    openClose.push_back("\\\\");
+                token = Tokenizer::nextToken(latexf);
+                skipLines(token);
+                std::vector<std::string> localScope;
+                scopeId++;
+                body(token, localScope, scopeId);
+                openClose.pop_back();
+            }
+            output << "}\n";
+        }
+        openClose.pop_back();
+    }
 }
 
 bool TexParser::overAtom(std::string &token, std::vector<std::string> &itemsScope, int scope)

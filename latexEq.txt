@@ -1,3 +1,4 @@
+
 .\" PSTITLE: Typesetting Mathematics with Neateqn
 .so neat__.ms
 .ds en.cl "#936
@@ -47,4 +48,10 @@ S(\omega)=1.466, H_s^2 \frac{\omega_0^5}{\omega^6} \exp\Bigl[-3^{\frac{\omega}{\
 .BL
 x + 1 + \left[sd \over \zeta \right] \times {\left( x + 1 \right) ^ 2} - {{c} \choose {b}} + \int_{i = 0}^{100} \sum_{j = 1}^{n} x
 .EL
-@ a + bf + \alpha + 4 @
+this is a text for @ a + bf + \alpha + 4 @ test.
+.BL 
+\left [ \begin{array}{cc}
+\alpha_i & \alpha_i^\phi \\
+\beta^{( 90 + \pi ) \times \kappa} & \beta^{\Gamma + 1}
+\end{array} \right ]
+.EL
