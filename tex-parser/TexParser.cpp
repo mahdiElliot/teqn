@@ -529,6 +529,16 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
         printOut(token);
         token = Tokenizer::nextToken(latexf);
     }
+    else if (token == "\\{" || token == "\\|")
+    {
+        printOut("left " + token);
+        token = Tokenizer::nextToken(latexf);
+    }
+    else if (token == "\\}")
+    {
+        printOut("right " + token);
+        token = Tokenizer::nextToken(latexf);
+    }
     else if (closeAtom(token) || openAtom(token) || token[0] == Constants::DOT)
     {
         printOut(token);
