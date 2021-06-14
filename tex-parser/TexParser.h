@@ -89,7 +89,7 @@ private:
         {Constants::DAGGER, "\\(dg"},
         {Constants::DDAG, "\\(dd"},
         {Constants::DDAGGER, "\\(dd"},
-        {Constants::SETMINUS, "\\"},
+        {Constants::SETMINUS, "\\(rs"},
         {Constants::SURD, "\\(sr"},
         {Constants::EQUIV, "\\(=="},
         {Constants::LEQ, "\\(<="},
