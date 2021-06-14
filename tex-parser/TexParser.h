@@ -105,7 +105,7 @@ private:
         {Constants::CAP, "\\(ca"},
         {Constants::SUBSET, "\\(sb"},
         {Constants::SUPSET, "\\(sp"},
-        {Constants::SUBSET, "\\(ib"},
+        {Constants::SUBSETEQ, "\\(ib"},
         {Constants::SUPSETEQ, "\\(ip"},
         {Constants::INFTY, "\\(if"},
         {Constants::PARTIAL, "\\(pd"},
