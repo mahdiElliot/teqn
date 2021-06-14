@@ -483,11 +483,6 @@ void TexParser::expr(std::string &token, std::vector<std::string> &itemsScope, i
         {
             token = Tokenizer::nextToken(latexf);
         }
-        else if (token == Constants::TIMES)
-        {
-            printOut(token);
-            token = Tokenizer::nextToken(latexf);
-        }
         else if (opAtom(token, itemsScope, scope))
         {
         }
@@ -745,7 +740,8 @@ bool TexParser::fourWayChoice(std::string &token)
 bool TexParser::binAtom(std::string &token, std::vector<std::string> &itemsScope, int scope)
 {
     bool e = true;
-    if (token[0] == Constants::ADD || token[0] == Constants::SUB || token[0] == Constants::MULT || token[0] == Constants::SLASH)
+    if (token[0] == Constants::ADD || token[0] == Constants::SUB || token[0] == Constants::MULT ||
+        token == Constants::TIMES || token[0] == Constants::SLASH)
     {
         printOut(token);
         token = Tokenizer::nextToken(latexf);
