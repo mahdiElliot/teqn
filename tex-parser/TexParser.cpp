@@ -50,6 +50,30 @@ void TexParser::printOut(std::string token)
     output << (t == "" ? token : t) << " ";
 }
 
+bool TexParser::isOffToken(std::string &token)
+{
+    if (token == "o")
+    {
+        std::string t = token;
+        char c;
+        latexf.get(c);
+        if (c == 'f')
+        {
+            t += c;
+            latexf.get(c);
+            if (c == 'f')
+            {
+                t += c;
+                token = t;
+                return true;
+            }
+            latexf.unget();
+        }
+        latexf.unget();
+    }
+    return false;
+}
+
 bool TexParser::isArrayToken(std::string &token)
 {
     if (token == "a")
@@ -1480,7 +1504,12 @@ bool TexParser::delimCheck(std::string &token)
             printOut("delim");
         token = Tokenizer::nextToken(latexf);
         skipLines(token);
-        if (token[0] != Constants::BACKS)
+        if (isOffToken(token))
+        {
+            delimStart = ' ';
+            delimEnd = ' ';
+        }
+        else if (token[0] != Constants::BACKS)
         {
             delimStart = token[0];
             if (delimStart2 == ' ')
