@@ -1434,12 +1434,16 @@ bool TexParser::opAtom(std::string &token, std::vector<std::string> &itemsScope,
 {
     if (token == Constants::SUM || token == Constants::PROD || token == Constants::COPROD || token == Constants::INTEGRAL)
     {
+        std::string current = token;
         printOut(token);
         token = Tokenizer::nextToken(latexf);
         skipLines(token);
         if (token[0] == Constants::UNDERLINE)
         {
-            printOut("from");
+            if (current == Constants::INTEGRAL)
+                printOut("sub");
+            else
+                printOut("from");
             token = Tokenizer::nextToken(latexf);
             skipLines(token);
             if (token[0] == Constants::OPENBRACE)
@@ -1464,7 +1468,10 @@ bool TexParser::opAtom(std::string &token, std::vector<std::string> &itemsScope,
             skipLines(token);
             if (token[0] == Constants::POWER)
             {
-                printOut("to");
+                if (current == Constants::INTEGRAL)
+                    printOut("sup");
+                else
+                    printOut("to");
                 token = Tokenizer::nextToken(latexf);
                 skipLines(token);
                 if (token[0] == Constants::OPENBRACE)
