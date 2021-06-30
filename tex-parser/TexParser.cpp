@@ -1477,6 +1477,8 @@ bool TexParser::opAtom(std::string &token, std::vector<std::string> &itemsScope,
                 if (token[0] == Constants::OPENBRACE)
                 {
                     printOut(token);
+                    if (current == Constants::INTEGRAL)
+                        printOut("~~~");
                     openClose.push_back(token);
                     token = Tokenizer::nextToken(latexf);
                     std::vector<std::string> localScope;
@@ -1491,7 +1493,16 @@ bool TexParser::opAtom(std::string &token, std::vector<std::string> &itemsScope,
                         syntaxError(std::string(1, Constants::CLOSEBRACE));
                 }
                 else
-                    printOut(token);
+                {
+                    if (current == Constants::INTEGRAL)
+                    {
+                        printOut("{ ~~~");
+                        printOut(token);
+                        printOut("}");
+                    }
+                    else
+                        printOut(token);
+                }
 
                 token = Tokenizer::nextToken(latexf);
             }
