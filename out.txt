@@ -46,7 +46,7 @@ delim @@
 S ( omega ) = 1 . 4 6 6 , H sub s sup 2 { omega sub 0 sup 5 } over { omega sup 6 } exp left [ - 3 sup { { omega } over { omega sub 0 } } right ] sup 2 
 .EN 
 .EQ 
-x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} + int from { i = 0 } to { 1 0 0 } sum from { j = 1 } to { n } x 
+x + 1 + left [ { s d } over { zeta } right ] times { left ( x + 1 right ) sup 2 } - { left ( pile { {{ c } } above { { b } } } right )} + int sub { i = 0 } sup { ~~~ 1 0 0 } sum from { j = 1 } to { n } x 
 .EN 
 this is a text for @ a + b f + alpha + 4 @  test.
 .EQ 
@@ -58,3 +58,5 @@ ccol { alpha sub i sup phi above beta sup { GAMMA + 1 }
 }
 } right ] 
 .EN 
+
+.EQ 

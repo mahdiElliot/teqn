@@ -145,4 +145,5 @@ const char *Constants::EMPTY = "\\O";
 const char *Constants::IN = "\\in";
 const char *Constants::BIGCIRC = "\\bigcirc";
 const char *Constants::DELIM = "\\delim";
+const char *Constants::QUAD = "\\quad";
 const char *Constants::END = "\\end";

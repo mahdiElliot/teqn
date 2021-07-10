@@ -55,3 +55,7 @@ this is a text for @ a + bf + \alpha + 4 @ test.
 \beta^{( 90 + \pi ) \times \kappa} & \beta^{\Gamma + 1}
 \end{array} \right ]
 .EL
+
+.BL
+f(x_i) = \sum^{m} _ {j=1} \beta_jg(w_j.x_i + b_j),\quad i=1,2,...,n
+.EL

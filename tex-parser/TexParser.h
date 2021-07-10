@@ -38,6 +38,7 @@ private:
         {std::string(1, Constants::POWER), "sup"}};
 
     std::unordered_map<std::string, std::string> translateLetters = {
+        {Constants::QUAD, "~~~~"},
         {Constants::ALPHA, "alpha"},
         {Constants::BETA, "beta"},
         {Constants::CHI, "chi"},
@@ -196,7 +197,6 @@ private:
     void backslashSkip(std::string &token);
     void parseAndPrint(std::string &token);
     bool delimCheck(std::string &token);
-
 
     void body(std::string &token, std::vector<std::string> &itemsScope, int scope);
     void stmt(std::string &token, std::vector<std::string> &itemsScope, int scope);

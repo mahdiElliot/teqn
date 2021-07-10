@@ -199,6 +199,7 @@ public:
     static const char *BIGCIRC;
 
     static const char *DELIM;
+    static const char *QUAD;
 
     static const char *END;
 
